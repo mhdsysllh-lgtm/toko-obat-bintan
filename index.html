@@ -7,7 +7,7 @@
     <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
     
     <style>
-        /* --- TEMA MEDICAL PROFESSIONAL V14 (UNIVERSAL HOSTING) --- */
+        /* --- TEMA MEDICAL PROFESSIONAL V14.1 (FIX GPS MAPS) --- */
         :root { 
             --primary: #00b894;       
             --primary-dark: #00a884;  
@@ -368,7 +368,6 @@
     </footer>
 
     <script>
-        // --- SETTING PENTING AGAR LINK JALAN DIMANA SAJA (NETLIFY/VERCEL) ---
         const BASE_URL_ONLINE = window.location.origin; 
         
         const CONFIG = {
@@ -382,7 +381,7 @@
         let products = [];
         let cart = JSON.parse(localStorage.getItem('cart_v2')) || [];
         let compareList = [];
-        let strukTotalBelanja = 0; // Variabel global untuk total belanja
+        let strukTotalBelanja = 0; 
 
         function toTitleCase(str) { return str.replace(/\w\S*/g, function(txt){return txt.charAt(0).toUpperCase() + txt.substr(1).toLowerCase();}); }
         function cleanUnit(unit) { if (!unit) return ''; let clean = unit.replace(/\//g, '').trim(); return clean.charAt(0).toUpperCase() + clean.slice(1); }
@@ -411,7 +410,6 @@
             updateCartBadge();
         };
 
-        // --- FUNGSI STRUK ADMIN MODE (DUAL LOGO RAPAT + SATUAN) ---
         function showStruk(encodedData) {
             try {
                 const jsonString = decodeURIComponent(escape(atob(encodedData)));
@@ -438,7 +436,6 @@
                 `;
 
                 data.items.forEach(item => {
-                    // Cek jika ada unit, jika tidak kosongkan
                     let unitStr = item.u ? ` ${item.u}` : ''; 
                     strukHTML += `
                         <div class="struk-item" style="margin-bottom:8px;">
@@ -566,7 +563,31 @@
         function openProductModal(id) { const p = products.find(x => x.id === id); const price = p.price - (p.price * (p.discount/100)); document.getElementById('modal-name').innerText = p.name; document.getElementById('modal-breadcrumb').innerText = toTitleCase(`${p.category} > ${p.subCategory} > ${p.type}`); document.getElementById('modal-price-area').innerHTML = `<div style="font-size:1.8rem; font-weight:700; color:var(--primary-dark);">${formatRp(price)} <span style="font-size:0.9rem; color:#636e72; font-weight:400;">/${p.unit}</span></div>`; document.getElementById('modal-desc').innerText = p.desc || "Tidak ada deskripsi."; document.getElementById('modal-stock').innerText = p.stock; const img = document.getElementById('modal-img'); const ph = document.getElementById('modal-placeholder'); if(p.image && p.image.length > 5) { img.src = p.image; img.style.display = 'block'; ph.style.display = 'none'; } else { img.style.display = 'none'; ph.style.display = 'block'; ph.innerText = p.name.substring(0,2).toUpperCase(); } document.getElementById('modal-btn-add').onclick = () => { addToCart(p.id); closeModal('product-modal'); }; document.getElementById('product-modal').style.display = 'block'; }
         function openCheckoutModal() { if(cart.length === 0) return showToast("Keranjang kosong!", true); document.getElementById('checkout-modal').style.display='block'; }
         function toggleAddress() { document.getElementById('address-group').style.display = document.querySelector('input[name="delivery"]:checked').value.includes('Delivery') ? 'block' : 'none'; }
-        function getLocation() { const btn = document.getElementById('btn-gps'); btn.innerHTML = '⏳ Sedang mencari...'; btn.style.opacity = "0.7"; if(navigator.geolocation) { navigator.geolocation.getCurrentPosition(pos => { document.getElementById('cust-location').value = `http://googleusercontent.com/maps.google.com/?q=${pos.coords.latitude},${pos.coords.longitude}`; btn.innerHTML = '✅ Lokasi Terkunci'; btn.classList.add('success'); btn.style.opacity = "1"; showToast("Lokasi berhasil disimpan"); }, () => { btn.innerHTML = '❌ Gagal. Coba Manual'; btn.style.opacity = "1"; showToast("Gagal mengambil lokasi", true); }); } else { btn.innerHTML = '❌ Tidak Support'; showToast("Browser tidak support GPS", true); } }
+        
+        // --- FIX BUG LOKASI SHERLOCK (GOOGLE MAPS) ---
+        function getLocation() { 
+            const btn = document.getElementById('btn-gps'); 
+            btn.innerHTML = '⏳ Sedang mencari...'; 
+            btn.style.opacity = "0.7"; 
+            
+            if(navigator.geolocation) { 
+                navigator.geolocation.getCurrentPosition(pos => { 
+                    // LINK YANG BENAR:
+                    document.getElementById('cust-location').value = `https://www.google.com/maps?q=${pos.coords.latitude},${pos.coords.longitude}`; 
+                    btn.innerHTML = '✅ Lokasi Terkunci'; 
+                    btn.classList.add('success'); 
+                    btn.style.opacity = "1"; 
+                    showToast("Lokasi berhasil disimpan"); 
+                }, () => { 
+                    btn.innerHTML = '❌ Gagal. Coba Manual'; 
+                    btn.style.opacity = "1"; 
+                    showToast("Gagal mengambil lokasi", true); 
+                }); 
+            } else { 
+                btn.innerHTML = '❌ Tidak Support'; 
+                showToast("Browser tidak support GPS", true); 
+            } 
+        }
         
         function processCheckout() {
             const name = document.getElementById('cust-name').value;
@@ -586,16 +607,14 @@
             
             let roundedTotal = Math.ceil(grandTotal / 500) * 500;
             
-            // PERBAIKAN: Kirim data unit (u: i.unit) ke struk
             const strukData = { 
                 name: name, del: del, pay: pay, addr: addr, 
                 items: cart.map(i=>({n:i.name, p:i.price-(i.price*(i.discount/100)), q:i.qty, u:i.unit})), 
-                total: roundedTotal // Total masih murni belanja
+                total: roundedTotal 
             }; 
             const encodedData = btoa(unescape(encodeURIComponent(JSON.stringify(strukData))));
             const magicLink = BASE_URL_ONLINE + "/?struk=" + encodedData;
 
-            // PESAN WA (TOTAL MASIH BELUM TERMASUK ONGKIR)
             let msg = `Halo Kak Admin Toko Obat Bintan Jaya, Saya mau pesan :\n${items}\n\n`;
             msg += String.fromCodePoint(0x1F4B0) + ` Grand Total: ${formatRp(grandTotal)}\n`; 
             msg += String.fromCodePoint(0x1F504) + ` Pembulatan: ${formatRp(roundedTotal)}\n`; 
@@ -621,16 +640,13 @@
             document.querySelectorAll('.page').forEach(p => p.classList.remove('active')); 
             document.getElementById(id).classList.add('active'); 
             window.scrollTo(0,0); 
-            
             document.querySelectorAll('.menu-link').forEach(l => l.classList.remove('active'));
             if(id==='home-page') document.getElementById('nav-home').classList.add('active');
             if(id==='product-page') document.getElementById('nav-product').classList.add('active');
-            
             if(id === 'cart-page') renderCart(); 
         }
         function adminLogin() { document.getElementById('login-modal').style.display = 'block'; }
         function checkAdmin() { if(document.getElementById('admin-pass').value === CONFIG.adminPass) window.open(CONFIG.adminLink, '_blank'); else showToast("Password Salah!", true); }
     </script>
 </body>
-
 </html>
