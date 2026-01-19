@@ -8,7 +8,7 @@
     <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
     
     <style>
-        /* --- TEMA MEDICAL PROFESSIONAL V37.0 (FIX WA BUTTON & Z-INDEX) --- */
+        /* --- TEMA MEDICAL PROFESSIONAL V37.0 (FIX WA & LOGO BSI) --- */
         :root { 
             --primary: #00b894;        
             --primary-dark: #00a884;   
@@ -116,7 +116,10 @@
             padding: 10px 0; 
             font-size: 0.85rem; 
             font-weight: 500; 
-            z-index: 5000; /* Z-Index Bottom Bar */
+            
+            /* REVISI PENTING: Z-INDEX LEBIH RENDAH DARI MODAL */
+            z-index: 5000; 
+            
             box-shadow: 0 -2px 10px rgba(0,0,0,0.2); 
             backdrop-filter: blur(5px); 
             overflow: hidden; 
@@ -245,14 +248,14 @@
         #compare-bar { position: fixed; bottom: 30px; left: 50%; transform: translateX(-50%) translateY(100px); background: var(--dark); color: white; padding: 10px 25px; border-radius: 50px; box-shadow: 0 10px 30px rgba(0,0,0,0.2); z-index: 3000; display: flex; align-items: center; gap: 15px; transition: 0.4s; }
         #compare-bar.show { transform: translateX(-50%) translateY(0); }
         
-        /* FIX: Z-INDEX MODAL DITINGGIKAN (SUPAYA TIDAK KETUTUP BOTTOM BAR) */
+        /* FIX: Z-INDEX MODAL 99999 AGAR DI ATAS SEMUANYA */
         .modal { 
             display: none; 
             position: fixed; 
             top: 0; left: 0; 
             width: 100%; height: 100%; 
             background: rgba(0,0,0,0.5); 
-            z-index: 99999; /* LEBIH TINGGI DARI BOTTOM BAR (5000) */
+            z-index: 99999; 
             backdrop-filter: blur(3px); 
         }
         
@@ -362,7 +365,23 @@
         .radio-box { display: flex; gap: 10px; margin-bottom: 20px; }
         .radio-opt { flex: 1; position: relative; }
         .radio-opt input { position: absolute; opacity: 0; cursor: pointer; }
-        .radio-opt label { display: block; padding: 12px; text-align: center; background: #fff; border: 1px solid #dfe6e9; border-radius: 10px; font-weight: 500; cursor: pointer; font-size: 0.9rem; }
+        
+        /* REVISI LABEL UNTUK SUPPORT LOGO */
+        .radio-opt label { 
+            display: flex; 
+            align-items: center; 
+            justify-content: center; 
+            gap: 6px; /* Jarak antara ikon dan teks */
+            padding: 12px; 
+            text-align: center; 
+            background: #fff; 
+            border: 1px solid #dfe6e9; 
+            border-radius: 10px; 
+            font-weight: 500; 
+            cursor: pointer; 
+            font-size: 0.9rem; 
+        }
+        
         .radio-opt input:checked + label { background: #e0f2f1; border-color: var(--primary); color: var(--primary-dark); font-weight: 600; }
         .btn-gps { width: 100%; padding: 12px; background: white; color: var(--secondary); border: 1px solid var(--secondary); border-radius: 10px; cursor: pointer; font-weight: 600; display: flex; align-items: center; justify-content: center; gap: 8px; transition: all 0.3s ease; margin-bottom: 10px; font-family: inherit; font-size: 0.9rem; }
         .btn-gps:hover { background: #e3f2fd; }
@@ -443,7 +462,7 @@
             <label style="font-weight:600; display:block; margin-bottom:5px;">Pertanyaan / Pesan</label>
             <textarea id="chat-msg" class="checkout-input" rows="4" placeholder="Tulis pertanyaan Anda disini..."></textarea>
             
-            <button onclick="sendChat()" class="btn-med" style="width:100%; background:var(--wa-color); color:white; padding:12px;">KIRIM KE WA➡️</button>
+            <button onclick="sendChat()" class="btn-med" style="width:100%; background:var(--wa-color); color:white; padding:12px;">KIRIM KE W➡️</button>
         </div>
     </div>
 
@@ -659,7 +678,15 @@
                 <label style="font-weight:600; display:block; margin-bottom:5px;">Metode Pembayaran</label>
                 <div class="radio-box">
                     <div class="radio-opt"><input type="radio" id="pay-cash" name="payment" value="Cash / Tunai" checked><label for="pay-cash">💵 Tunai (Di Toko)</label></div>
-                    <div class="radio-opt"><input type="radio" id="pay-tf" name="payment" value="Transfer (BSI)"><label for="pay-tf">💳 Transfer</label></div>
+                    
+                    <div class="radio-opt">
+                        <input type="radio" id="pay-tf" name="payment" value="Transfer (BSI)">
+                        <label for="pay-tf">
+                            <img src="https://upload.wikimedia.org/wikipedia/commons/a/a0/Bank_Syariah_Indonesia.svg" alt="BSI" style="height:18px;">
+                            Transfer
+                        </label>
+                    </div>
+
                 </div>
             </div>
             <button onclick="processCheckout()" class="btn-med" style="width:100%; background:var(--wa-color); color:white; padding:15px;">KIRIM PESAN (WA)</button>
@@ -1159,6 +1186,7 @@
         function removeFromCart(idx) { cart.splice(idx, 1); saveCart(); renderCart(); }
         function toggleCompare(id, btn) { if(compareList.includes(id)) { compareList = compareList.filter(x => x !== id); btn.classList.remove('active'); } else { if(compareList.length >= 3) return showToast("Maks 3 produk", true); compareList.push(id); btn.classList.add('active'); } const bar = document.getElementById('compare-bar'); document.getElementById('compare-count').innerText = compareList.length; if(compareList.length > 0) bar.classList.add('show'); else bar.classList.remove('show'); }
         function openCompareModal() { document.getElementById('compare-tbody').innerHTML = compareList.map(id => { const p = products.find(x => x.id === id); const price = p.price - (p.price * (p.discount/100)); return `<tr><td><img src="${p.image}" style="width:50px;" onerror="this.style.display='none'"></td><td><div class="compare-name">${p.name}</div><div class="compare-price">${formatRp(price)}/${p.unit}</div><div class="compare-desc">${p.desc}</div></td><td><button class="btn-med" onclick="addToCart(${p.id})" style="background:var(--primary); color:white; padding:5px; font-size:0.7rem;">+ ${String.fromCodePoint(0x1F6D2)}</button></td></tr>`; }).join(''); document.getElementById('compare-modal').style.display='block'; }
+        function closeModal(id) { document.getElementById(id).style.display = 'none'; if(id === 'compare-modal') { compareList = []; document.getElementById('compare-bar').classList.remove('show'); document.querySelectorAll('.btn-compare').forEach(b => b.classList.remove('active')); } }
         
         // --- REVISI: MUNCULKAN KEMBALI TOMBOL CHAT SAAT TUTUP ---
         function closeModal(id) { 
@@ -1359,9 +1387,8 @@
             
             let pickupDetail = "";
             if(pickupMethod === 'Ambil Sendiri') {
-                const pickerEl = document.getElementById('picker-name');
-                const picker = pickerEl ? pickerEl.value : ""; // Check if exists
-                if(!picker && document.getElementById('picker-name')) return showToast("Isi Nama Pengambil", true);
+                const picker = document.getElementById('picker-name').value;
+                if(!picker) return showToast("Isi Nama Pengambil", true);
                 pickupDetail = `Oleh: ${picker}`;
             } else {
                 pickupDetail = `(Kurir Urusan Pembeli)`;
@@ -1569,4 +1596,3 @@
     </script>
 </body>
 </html>
-
