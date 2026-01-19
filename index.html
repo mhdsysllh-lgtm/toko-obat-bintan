@@ -8,7 +8,7 @@
     <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
     
     <style>
-        /* --- TEMA MEDICAL PROFESSIONAL V35.0 (ROUND FLOATING CHAT BUTTON) --- */
+        /* --- TEMA MEDICAL PROFESSIONAL V36.0 (FINAL URL FIX) --- */
         :root { 
             --primary: #00b894;        
             --primary-dark: #00a884;   
@@ -443,7 +443,7 @@
             <label style="font-weight:600; display:block; margin-bottom:5px;">Pertanyaan / Pesan</label>
             <textarea id="chat-msg" class="checkout-input" rows="4" placeholder="Tulis pertanyaan Anda disini..."></textarea>
             
-            <button onclick="sendChat()" class="btn-med" style="width:100%; background:var(--wa-color); color:white; padding:12px;">KIRIM KE WA➡️</button>
+            <button onclick="sendChat()" class="btn-med" style="width:100%; background:var(--wa-color); color:white; padding:12px;">KIRIM KE W➡️</button>
         </div>
     </div>
 
@@ -869,26 +869,39 @@
                 // Jika sudah ada, isi form checkout
                 try { document.getElementById('cust-name').value = visitor; } catch(e){} 
             }
+            
+            // 3. HANDLER UNTUK TOMBOL BACK (BROWSER)
+            window.onpopstate = function(event) {
+                // Cek apakah ada parameter produk di URL
+                const urlParams = new URLSearchParams(window.location.search);
+                const prodLink = urlParams.get('product');
 
-            // 3. JALANKAN DOWNLOAD DATA DI BACKGROUND (TIDAK MEMBLOKIR UI)
-            // Kita panggil fungsi async ini tanpa 'await' agar kode tidak berhenti di sini
+                // Jika TIDAK ada parameter product (kembali ke root), tutup modal
+                if (!prodLink) {
+                    closeModal('product-modal');
+                } else {
+                    // Jika ADA parameter (misal user forward), buka modal lagi
+                    // (Opsional, tapi biasanya browser handle ini)
+                    const prodId = parseInt(prodLink);
+                    if(products.length > 0) openProductModal(prodId);
+                }
+            };
+
+            // 4. JALANKAN DOWNLOAD DATA DI BACKGROUND
             runBackgroundProcess();
         };
 
         // Fungsi baru untuk loading data di background
         async function runBackgroundProcess() {
-            // Cek URL params (Struk)
             const urlParams = new URLSearchParams(window.location.search);
             if (urlParams.get('struk')) { 
                 showStruk(urlParams.get('struk')); 
-                document.getElementById('welcome-modal').style.display = 'none'; // Tutup welcome jika struk
+                document.getElementById('welcome-modal').style.display = 'none'; 
                 return; 
             } 
 
-            // A. Load Config (Maintenance, Jam Buka, dll)
             await loadAppConfig();
             
-            // Cek Maintenance setelah config loaded
             if(String(APP_CONFIG.maintenance).toUpperCase().trim() === 'ON') {
                  document.getElementById('welcome-modal').style.display = 'none';
                  document.getElementById('maintenance-screen').style.display = 'flex';
@@ -896,16 +909,14 @@
                  return; 
             }
 
-            // B. Load Produk (Berat)
             await loadProducts();
             
-            // C. Cek Deep Link (Hanya setelah produk siap)
+            // Cek Deep Link (setelah produk siap)
             const prodLink = urlParams.get('product');
             if(prodLink) {
                 const prodId = parseInt(prodLink);
                 const exist = products.find(p => p.id === prodId);
                 if(exist) {
-                    // Delay dikit biar transisi halus jika user langsung close modal
                     setTimeout(() => openProductModal(prodId), 500);
                 }
             }
@@ -982,7 +993,6 @@
                 const rows = await res.json(); 
                 if(rows.error) throw new Error(rows.error);
                 const dataRows = rows.slice(1);
-                // REVISI: MENAMBAH KOLOM KE-11 (INDEX 11) UNTUK VARIAN
                 const newProducts = dataRows.map((cols, idx) => {
                     if(!cols || cols.length < 2) return null;
                     return { 
@@ -990,7 +1000,7 @@
                         price: typeof cols[4] === 'number' ? cols[4] : (parseInt(String(cols[4]).replace(/[^\d]/g, '')) || 0), 
                         discount: parseInt(cols[5]) || 0, stock: cols[6] ? String(cols[6]) : 'Ada', 
                         image: cols[7], desc: cols[8], unit: cleanUnit(cols[9]), label: cols[10] ? String(cols[10]).trim() : '',
-                        variantRaw: cols[11] ? String(cols[11]) : '' // DATA VARIAN KOLOM L
+                        variantRaw: cols[11] ? String(cols[11]) : '' 
                     };
                 }).filter(p => p);
                 if(newProducts.length > 0) { products = newProducts; initShop(); loading.style.display = 'none'; document.getElementById('promo-area').style.display = 'block'; } 
@@ -1148,7 +1158,6 @@
         function removeFromCart(idx) { cart.splice(idx, 1); saveCart(); renderCart(); }
         function toggleCompare(id, btn) { if(compareList.includes(id)) { compareList = compareList.filter(x => x !== id); btn.classList.remove('active'); } else { if(compareList.length >= 3) return showToast("Maks 3 produk", true); compareList.push(id); btn.classList.add('active'); } const bar = document.getElementById('compare-bar'); document.getElementById('compare-count').innerText = compareList.length; if(compareList.length > 0) bar.classList.add('show'); else bar.classList.remove('show'); }
         function openCompareModal() { document.getElementById('compare-tbody').innerHTML = compareList.map(id => { const p = products.find(x => x.id === id); const price = p.price - (p.price * (p.discount/100)); return `<tr><td><img src="${p.image}" style="width:50px;" onerror="this.style.display='none'"></td><td><div class="compare-name">${p.name}</div><div class="compare-price">${formatRp(price)}/${p.unit}</div><div class="compare-desc">${p.desc}</div></td><td><button class="btn-med" onclick="addToCart(${p.id})" style="background:var(--primary); color:white; padding:5px; font-size:0.7rem;">+ ${String.fromCodePoint(0x1F6D2)}</button></td></tr>`; }).join(''); document.getElementById('compare-modal').style.display='block'; }
-        function closeModal(id) { document.getElementById(id).style.display = 'none'; if(id === 'compare-modal') { compareList = []; document.getElementById('compare-bar').classList.remove('show'); document.querySelectorAll('.btn-compare').forEach(b => b.classList.remove('active')); } }
         
         // --- REVISI: MUNCULKAN KEMBALI TOMBOL CHAT SAAT TUTUP ---
         function closeModal(id) { 
@@ -1164,6 +1173,11 @@
             if(id === 'product-modal') {
                 const mainChatBtn = document.querySelector('.btn-chat-float');
                 if(mainChatBtn) mainChatBtn.style.display = 'flex';
+
+                // --- REVISI URL: HAPUS QUERY PARAM SAAT TUTUP ---
+                // Bersihkan URL jadi bersih kembali (tanpa ?product=...)
+                const cleanURL = window.location.pathname; // Hanya ambil path utama (/)
+                window.history.pushState({ path: cleanURL }, '', cleanURL);
             }
         }
 
@@ -1177,6 +1191,11 @@
             // --- REVISI: SEMBUNYIKAN TOMBOL CHAT UTAMA ---
             const mainChatBtn = document.querySelector('.btn-chat-float');
             if(mainChatBtn) mainChatBtn.style.display = 'none';
+
+            // --- REVISI URL: UPDATE URL SAAT BUKA PRODUK ---
+            // Supaya bisa di-refresh dan dishare langsung dari address bar
+            const newUrl = '?product=' + id;
+            window.history.pushState({path: newUrl}, '', newUrl);
 
             // Cek Stok
             const isHabis = !p.stock.toLowerCase().includes('ada') && p.stock != '0' && p.stock != '';
