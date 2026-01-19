@@ -8,7 +8,7 @@
     <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
     
     <style>
-        /* --- TEMA MEDICAL PROFESSIONAL V36.0 (FINAL URL FIX) --- */
+        /* --- TEMA MEDICAL PROFESSIONAL V37.0 (FIX WA BUTTON & Z-INDEX) --- */
         :root { 
             --primary: #00b894;        
             --primary-dark: #00a884;   
@@ -106,7 +106,21 @@
         #top-bar-container { display: none; width: 100%; background-color: #008f7a; color: #ffffff; padding: 8px 0; overflow: hidden; white-space: nowrap; position: relative; z-index: 2000; font-size: 0.85rem; font-weight: 600; border-bottom: 1px solid rgba(0,0,0,0.1); }
         
         #bottom-bar-container { 
-            display: none; position: fixed; bottom: 0; left: 0; width: 100%; background-color: #2d3436; color: #ffffff; padding: 10px 0; font-size: 0.85rem; font-weight: 500; z-index: 5000; box-shadow: 0 -2px 10px rgba(0,0,0,0.2); backdrop-filter: blur(5px); overflow: hidden; white-space: nowrap; 
+            display: none; 
+            position: fixed; 
+            bottom: 0; 
+            left: 0; 
+            width: 100%; 
+            background-color: #2d3436; 
+            color: #ffffff; 
+            padding: 10px 0; 
+            font-size: 0.85rem; 
+            font-weight: 500; 
+            z-index: 5000; /* Z-Index Bottom Bar */
+            box-shadow: 0 -2px 10px rgba(0,0,0,0.2); 
+            backdrop-filter: blur(5px); 
+            overflow: hidden; 
+            white-space: nowrap; 
         }
 
         .teks-gerak { display: inline-block; padding-left: 100%; animation: jalan-kiri 25s linear infinite; }
@@ -118,26 +132,14 @@
         .btn-med { border: none; border-radius: 50px; cursor: pointer; transition: 0.2s; font-family: inherit; font-weight: 600; box-shadow: 0 4px 6px rgba(0,0,0,0.1); transform: translateY(0); display: inline-flex; align-items: center; justify-content: center; gap: 5px;}
         .btn-med:active { transform: translateY(2px); box-shadow: none; }
 
-        /* REVISI: FLOATING CHAT BUTTON (BULAT IKON SAJA) */
+        /* FLOATING CHAT BUTTON (MAIN) */
         .btn-chat-float {
-            position: fixed; 
-            bottom: 25px; 
-            right: 20px;
-            width: 60px;          /* Lebar Tetap */
-            height: 60px;         /* Tinggi Tetap (Sama biar bulat) */
-            background-color: var(--wa-color); 
-            color: white;
-            border-radius: 50%;   /* Bulat Sempurna */
-            box-shadow: 0 5px 20px rgba(37, 211, 102, 0.4);
-            display: flex; 
-            align-items: center; 
-            justify-content: center; /* Konten di tengah */
-            z-index: 2900; 
-            cursor: pointer; 
-            transition: all 0.3s ease;
-            animation: floatUp 3s infinite ease-in-out; 
-            border: 2px solid white;
-            font-size: 2rem;      /* Ukuran Ikon Besar */
+            position: fixed; bottom: 25px; right: 20px;
+            width: 60px; height: 60px; background-color: var(--wa-color); color: white;
+            border-radius: 50%; box-shadow: 0 5px 20px rgba(37, 211, 102, 0.4);
+            display: flex; align-items: center; justify-content: center;
+            z-index: 2900; cursor: pointer; transition: all 0.3s ease;
+            animation: floatUp 3s infinite ease-in-out; border: 2px solid white; font-size: 2rem;
         }
         .btn-chat-float:hover { transform: translateY(-5px) scale(1.1); }
         @keyframes floatUp { 0%, 100% { transform: translateY(0); } 50% { transform: translateY(-5px); } }
@@ -231,31 +233,29 @@
         .price-final { color: var(--primary-dark); font-weight: 700; font-size: 1.1rem; }
         .unit-badge { background: #e3f2fd; color: var(--secondary); font-size: 0.7rem; padding: 2px 6px; border-radius: 6px; margin-left: 5px; vertical-align: middle; font-weight: 600; }
         .card-actions { display: flex; flex-direction: row; gap: 10px; margin-top: auto; align-items: center; }
-        
-        /* TOMBOL CARD: IKON KERANJANG */
-        .btn-add-cart { 
-            flex: 1; 
-            background: var(--primary); 
-            color: white; 
-            font-size: 1.2rem; 
-            padding: 8px; 
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            gap: 5px;
-        }
-        
+        .btn-add-cart { flex: 1; background: var(--primary); color: white; font-size: 1.2rem; padding: 8px; display: flex; align-items: center; justify-content: center; gap: 5px; }
         .btn-compare { width: 45px; height: 40px; background: white; border: 1px solid #dfe6e9; color: #b2bec3; border-radius: 12px; font-size: 1.1rem; display: flex; align-items: center; justify-content: center; }
         .btn-compare.active { border-color: var(--secondary); color: var(--secondary); background: #e3f2fd; }
         .btn-compare:disabled { cursor: not-allowed; opacity: 0.5; background: #f1f2f6; }
 
         /* TOAST & MODALS */
-        #toast { visibility: hidden; min-width: 300px; background: white; border-left: 5px solid var(--primary); color: var(--dark); border-radius: 8px; padding: 15px; position: fixed; z-index: 9999; left: 50%; bottom: 30px; transform: translateX(-50%) translateY(50px); box-shadow: 0 10px 40px rgba(0,0,0,0.15); font-weight: 500; opacity: 0; transition: all 0.4s; display: flex; align-items: center; gap: 10px; }
+        #toast { visibility: hidden; min-width: 300px; background: white; border-left: 5px solid var(--primary); color: var(--dark); border-radius: 8px; padding: 15px; position: fixed; z-index: 999999; left: 50%; bottom: 30px; transform: translateX(-50%) translateY(50px); box-shadow: 0 10px 40px rgba(0,0,0,0.15); font-weight: 500; opacity: 0; transition: all 0.4s; display: flex; align-items: center; gap: 10px; }
         #toast.show { visibility: visible; opacity: 1; transform: translateX(-50%) translateY(0); }
         #toast.error { border-left-color: var(--promo-red); }
         #compare-bar { position: fixed; bottom: 30px; left: 50%; transform: translateX(-50%) translateY(100px); background: var(--dark); color: white; padding: 10px 25px; border-radius: 50px; box-shadow: 0 10px 30px rgba(0,0,0,0.2); z-index: 3000; display: flex; align-items: center; gap: 15px; transition: 0.4s; }
         #compare-bar.show { transform: translateX(-50%) translateY(0); }
-        .modal { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.5); z-index: 2000; backdrop-filter: blur(3px); }
+        
+        /* FIX: Z-INDEX MODAL DITINGGIKAN (SUPAYA TIDAK KETUTUP BOTTOM BAR) */
+        .modal { 
+            display: none; 
+            position: fixed; 
+            top: 0; left: 0; 
+            width: 100%; height: 100%; 
+            background: rgba(0,0,0,0.5); 
+            z-index: 99999; /* LEBIH TINGGI DARI BOTTOM BAR (5000) */
+            backdrop-filter: blur(3px); 
+        }
+        
         .modal-content { background: white; width: 90%; max-width: 600px; margin: 50px auto; border-radius: 20px; padding: 30px; position: relative; max-height: 90vh; overflow-y: auto; box-shadow: 0 25px 50px rgba(0,0,0,0.15); animation: popIn 0.3s; }
         @keyframes popIn { from { transform: scale(0.9); opacity: 0; } to { transform: scale(1); opacity: 1; } }
 
@@ -443,7 +443,7 @@
             <label style="font-weight:600; display:block; margin-bottom:5px;">Pertanyaan / Pesan</label>
             <textarea id="chat-msg" class="checkout-input" rows="4" placeholder="Tulis pertanyaan Anda disini..."></textarea>
             
-            <button onclick="sendChat()" class="btn-med" style="width:100%; background:var(--wa-color); color:white; padding:12px;">KIRIM KE W➡️</button>
+            <button onclick="sendChat()" class="btn-med" style="width:100%; background:var(--wa-color); color:white; padding:12px;">KIRIM KE WA➡️</button>
         </div>
     </div>
 
@@ -993,6 +993,7 @@
                 const rows = await res.json(); 
                 if(rows.error) throw new Error(rows.error);
                 const dataRows = rows.slice(1);
+                // REVISI: MENAMBAH KOLOM KE-11 (INDEX 11) UNTUK VARIAN
                 const newProducts = dataRows.map((cols, idx) => {
                     if(!cols || cols.length < 2) return null;
                     return { 
@@ -1000,7 +1001,7 @@
                         price: typeof cols[4] === 'number' ? cols[4] : (parseInt(String(cols[4]).replace(/[^\d]/g, '')) || 0), 
                         discount: parseInt(cols[5]) || 0, stock: cols[6] ? String(cols[6]) : 'Ada', 
                         image: cols[7], desc: cols[8], unit: cleanUnit(cols[9]), label: cols[10] ? String(cols[10]).trim() : '',
-                        variantRaw: cols[11] ? String(cols[11]) : '' 
+                        variantRaw: cols[11] ? String(cols[11]) : '' // DATA VARIAN KOLOM L
                     };
                 }).filter(p => p);
                 if(newProducts.length > 0) { products = newProducts; initShop(); loading.style.display = 'none'; document.getElementById('promo-area').style.display = 'block'; } 
@@ -1347,6 +1348,189 @@
                     </div>
                 `;
             }
+        }
+
+        function processCheckout() {
+            const name = document.getElementById('cust-name').value;
+            const pickupMethod = document.querySelector('input[name="pickup"]:checked').value;
+            const pay = document.querySelector('input[name="payment"]:checked').value;
+            
+            if(!name) return showToast("Isi Nama Pemesan", true);
+            
+            let pickupDetail = "";
+            if(pickupMethod === 'Ambil Sendiri') {
+                const pickerEl = document.getElementById('picker-name');
+                const picker = pickerEl ? pickerEl.value : ""; // Check if exists
+                if(!picker && document.getElementById('picker-name')) return showToast("Isi Nama Pengambil", true);
+                pickupDetail = `Oleh: ${picker}`;
+            } else {
+                pickupDetail = `(Kurir Urusan Pembeli)`;
+            }
+
+            let grandTotal = 0;
+            const items = cart.map(i => {
+                let fp = i.price - (i.price * (i.discount/100));
+                grandTotal += (fp * i.qty);
+                // Nama di cart sudah mengandung varian jika ada
+                return String.fromCodePoint(0x1F3F7) + ` ${i.qty} ${i.unit} ${i.name} = ${formatRp(fp * i.qty)}`; 
+            }).join('\n'); 
+
+            let roundedTotal = getCustomRounding(grandTotal);
+
+            const strukData = { 
+                n: name, 
+                d: pickupMethod, 
+                p: pay, 
+                dt: pickupDetail, 
+                i: cart.map(i=>({n:i.name, p:i.price-(i.price*(i.discount/100)), q:i.qty, u:i.unit})), 
+                t: roundedTotal 
+            };
+            const encodedData = btoa(unescape(encodeURIComponent(JSON.stringify(strukData))));
+            const magicLink = BASE_URL_ONLINE + "?struk=" + encodedData;
+
+            let msg = `🟢 *[ORDER DARI WEBSITE]*\n\n`;
+            msg += `Halo Kak Kasir Toko Obat Bintan Jaya, Saya mau pesan:\n\n`;
+            msg += `${items}\n\n`;
+            
+            msg += `----------------------------------\n`;
+	        msg += String.fromCodePoint(0x1F4B0) + ` Grand Total: ${formatRp(grandTotal)}\n`;
+            msg += String.fromCodePoint(0x1F504) + ` Pembulatan: ${formatRp(roundedTotal)}\n`;
+            msg += String.fromCodePoint(0x2705) + ` Total Bayar: ${formatRp(roundedTotal)}\n`;
+            msg += `----------------------------------\n`;
+            msg += String.fromCodePoint(0x1F464) + ` Nama: ${name}\n`;
+            msg += String.fromCodePoint(0x1F69A) + ` Metode: ${pickupMethod}\n`;
+            
+            if(pickupMethod === 'Ambil Sendiri') {
+                msg += String.fromCodePoint(0x1F91D) + ` Diambil: ${pickupDetail.replace('Oleh: ', '')}\n`;
+            } else {
+                msg += String.fromCodePoint(0x26A0) + ` Catatan: Kurir dipesan pembeli\n`;
+            }
+
+            msg += String.fromCodePoint(0x1F4B3) + ` Bayar: ${pay}\n`;
+            msg += `----------------------------------\n`;
+            msg += String.fromCodePoint(0x1F5A8) + ` *CETAK STRUK (Utk Kurir):*\n${magicLink}`;
+
+            // --- REVISI: BERSIHKAN NOMOR WA DARI 08 JADI 628 ---
+            let targetWA = APP_CONFIG.wa_order;
+            // Hapus karakter non-digit (spasi, strip, plus)
+            targetWA = targetWA.replace(/\D/g, ''); 
+            // Jika diawali 08, ganti jadi 628
+            if(targetWA.startsWith('08')) {
+                targetWA = '62' + targetWA.substring(1);
+            }
+
+            window.open(`https://api.whatsapp.com/send?phone=${targetWA}&text=${encodeURIComponent(msg)}`, '_blank'); 
+
+            cart = []; 
+            saveCart(); 
+            closeModal('checkout-modal'); 
+            showPage('home-page');
+            setTimeout(() => { document.getElementById('review-modal').style.display='block'; }, 1000);
+        }
+
+        // --- UPDATE TAMPILAN STRUK ---
+        function showStruk(encodedData) { 
+            try { 
+                const jsonString = decodeURIComponent(escape(atob(encodedData))); 
+                const data = JSON.parse(jsonString); 
+                strukTotalBelanja = parseInt(data.t) || 0; 
+
+                let strukHTML = ` 
+                <div class="struk-container"> 
+                    <div class="struk-header-row"> 
+                        <img src="logostruleft.png" class="struk-logo" alt="Logo Kiri"> 
+                        <div class="struk-title"> 
+                            <h3>TOKO OBAT<br>BINTAN JAYA</h3> 
+                            <p>${new Date().toLocaleString()}</p> 
+                        </div> 
+                        <img src="logostrukright.png" class="struk-logo" alt="Logo Kanan"> 
+                    </div> 
+                    
+                    <div style="text-align:center; font-size:0.8rem; margin-bottom:15px; border-bottom:1px dashed #ccc; padding-bottom:10px;">
+                        <strong>📍 ALAMAT PENGAMBILAN:</strong><br>
+                        ${SHOP_ADDRESS}
+                    </div>
+
+                    <div class="struk-body"> 
+                        <div class="struk-item"><span>Pemesan:</span> <strong>${data.n}</strong></div> 
+                        <div class="struk-item"><span>Metode:</span> ${data.d}</div> 
+                        <div class="struk-item"><span>Info:</span> ${data.dt || '-'}</div> 
+                        <div class="struk-item"><span>Bayar:</span> ${data.p}</div> 
+                        <hr style="border-top:1px dashed #ccc; margin:10px 0;"> `; 
+                
+                data.i.forEach(item => { 
+                    let unitStr = item.u ? ` ${item.u}` : ''; 
+                    strukHTML += ` 
+                    <div class="struk-item" style="margin-bottom:8px;"> 
+                        <div style="flex:1;">${item.n} <br> <small>${item.q}${unitStr} x ${formatRp(item.p)}</small></div> 
+                        <div style="font-weight:bold;">${formatRp(item.p * item.q)}</div> 
+                    </div>`; 
+                }); 
+                
+                strukHTML += ` 
+                    <hr style="border-top:1px dashed #ccc; margin:10px 0;"> 
+                    <div class="struk-item struk-total" style="margin-top:10px;"> 
+                        <span>TOTAL BAYAR</span> 
+                        <span id="final-total">${formatRp(strukTotalBelanja)}</span> 
+                    </div> 
+                </div> 
+                <div class="struk-footer">
+                    Terima Kasih telah berbelanja!<br>
+                    Tunjukkan struk ini saat pengambilan barang.
+                </div> 
+                </div>`; 
+                
+                document.getElementById('struk-content').innerHTML = strukHTML; 
+                document.getElementById('struk-modal').style.display = 'block'; 
+                document.getElementById('welcome-modal').style.display = 'none'; 
+                document.getElementById('maintenance-screen').style.display = 'none'; 
+            } catch (e) { showToast("Link struk tidak valid", true); } 
+        }
+
+        function openRequestModal() {
+            const keyword = document.getElementById('search-input').value;
+            document.getElementById('req-product').value = keyword;
+            try {
+                const visitor = sessionStorage.getItem('visitorName');
+                if(visitor) document.getElementById('req-name').value = visitor;
+            } catch(e){}
+            const catSelect = document.getElementById('req-category');
+            catSelect.innerHTML = '<option value="">-- Pilih Kategori --</option>';
+            CATEGORY_MAP.forEach(c => {
+                catSelect.innerHTML += `<option value="${c.label}">${c.icon} ${c.label}</option>`;
+            });
+            document.getElementById('request-modal').style.display = 'block';
+        }
+
+        function sendRequest() {
+            const name = document.getElementById('req-name').value;
+            const product = document.getElementById('req-product').value;
+            const category = document.getElementById('req-category').value;
+            const forWhom = document.querySelector('input[name="req-for"]:checked').value;
+            const needType = document.querySelector('input[name="req-need"]:checked').value;
+            const reason = document.getElementById('req-reason').value;
+
+            if(!name || !product || !category || !reason) return showToast("Mohon lengkapi semua kolom", true);
+
+            let msg = `*FORM REQUEST PRODUK*\n\n`;
+            msg += `Halo Kak ` + String.fromCodePoint(0x1F44B) + `\nPerkenalkan, saya ${name}.\n\n`;
+            msg += `Saya ingin mengajukan permintaan pengadaan produk berikut:\n`;
+            msg += String.fromCodePoint(0x1F4E6) + ` Nama Produk : ${product}\n`;
+            msg += String.fromCodePoint(0x1F4C2) + ` Kategori : ${category}\n`;
+            msg += `----------------------------------\n`;
+            msg += String.fromCodePoint(0x1F464) + ` Utk Siapa : ${forWhom}\n`;
+            msg += String.fromCodePoint(0x1F6A8) + ` Kebutuhan : ${needType}\n`;
+            msg += `----------------------------------\n`;
+            msg += String.fromCodePoint(0x1F4DD) + ` Detail/Alasan:\n"${reason}"\n\n`;
+            msg += String.fromCodePoint(0x2139) + ` _Note: ${name} menunggu info ketersediaan._\n\n`;
+            msg += `----------------------------------\n`;
+            msg += String.fromCodePoint(0x1F4CD) + ` Sumber : Website\n`;
+            msg += String.fromCodePoint(0x23F0) + ` Waktu : ${new Date().toLocaleString('id-ID')}`;
+
+            const targetNumber = APP_CONFIG.wa_request && APP_CONFIG.wa_request.length > 5 ? APP_CONFIG.wa_request : APP_CONFIG.wa_order;
+            const waLink = `https://api.whatsapp.com/send?phone=${targetNumber}&text=${encodeURIComponent(msg)}`;
+            window.open(waLink, '_blank');
+            closeModal('request-modal');
         }
 
         // --- NEW: FUNGSI TOMBOL CHAT (CHAT BANTUAN) ---
