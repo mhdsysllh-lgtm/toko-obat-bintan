@@ -402,101 +402,107 @@
         .maintenance-icon { font-size: 4rem; margin-bottom: 20px; animation: bounce 2s infinite; }
         @keyframes bounce { 0%, 20%, 50%, 80%, 100% {transform: translateY(0);} 40% {transform: translateY(-20px);} 60% {transform: translateY(-10px);} }
 
-/* === STRUK CSS (UPDATE 58mm / 384 Dots) === */
-        .struk-container { 
-            font-family: 'Courier New', Courier, monospace; 
-            background: #fff; 
-            padding: 2px 0; /* Padding diminimalkan agar muat banyak */
-            
-            /* UKURAN FIX 58mm (384 dots) */
-            width: 58mm; 
-            max-width: 58mm; 
-            
-            margin: 0 auto; 
-            box-shadow: none; /* Hilangkan bayangan saat print */
-            border: none;     /* Hilangkan garis kotak */
-            color: #000;      /* Hitam pekat untuk thermal */
-        }
+/* === CSS TAMPILAN STRUK (AGAR BAGUS DI LAYAR HP) === */
+.struk-container {
+    font-family: 'Courier New', Courier, monospace;
+    background: #fff;
+    padding: 15px;
+    
+    /* Di layar HP kita buat agak lebar biar enak dilihat */
+    width: 100%;
+    max-width: 350px; 
+    
+    margin: 0 auto;
+    border: 1px solid #ddd;   /* Pakai garis tepi biar rapi di layar */
+    box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+    color: #000;
+}
 
-        .struk-header-row { 
-            display: flex; 
-            align-items: center; 
-            justify-content: center; 
-            gap: 10px; 
-            border-bottom: 2px dashed #000; 
-            padding-bottom: 10px; 
-            margin-bottom: 10px; 
-        }
-        
-        /* Logo dan teks disesuaikan agar tidak lebar */
-        .struk-logo { width: 40px; height: auto; object-fit: contain; }
-        .struk-title { text-align: center; padding: 0; }
-        .struk-title h3 { margin: 0; font-size: 0.9rem; line-height: 1.2; font-weight:800; }
-        .struk-title p { margin: 0; font-size: 0.6rem; }
-        
-        .struk-body { margin-bottom: 15px; }
-        
-        /* Font size 10pt/0.85rem adalah standar aman (kurang lebih 32 karakter per baris) */
-        .struk-item { 
-            display: flex; 
-            justify-content: space-between; 
-            margin-bottom: 4px; 
-            font-size: 0.85rem; 
-            line-height: 1.2;
-        }
-        
-        .struk-total { 
-            border-top: 2px dashed #000; 
-            padding-top: 10px; 
-            margin-top: 10px; 
-            font-weight: bold; 
-            font-size: 1rem;
-        }
-        
-        .struk-footer { 
-            text-align: center; 
-            font-size: 0.7rem; 
-            margin-top: 15px; 
-            color: #000; 
-        }
+.struk-header-row {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 10px;
+    border-bottom: 2px dashed #000;
+    padding-bottom: 10px;
+    margin-bottom: 15px;
+}
 
-        /* === SETTING PRINT (MEDIA QUERY) === */
-        @media print {
-            /* Memaksa browser mengenali ukuran kertas 58mm */
-            @page {
-                size: 58mm auto; 
-                margin: 0mm; 
-            }
+.struk-logo { width: 50px; height: auto; object-fit: contain; }
+.struk-title { text-align: center; }
+.struk-title h3 { margin: 0; font-size: 1rem; line-height: 1.2; font-weight: 800; }
+.struk-title p { margin: 0; font-size: 0.7rem; }
 
-            body * { visibility: hidden; }
-            
-            /* Tampilkan Struk */
-            #struk-modal, #struk-modal * { visibility: visible; }
-            
-            #struk-modal { 
-                position: absolute; 
-                left: 0; 
-                top: 0; 
-                width: 58mm; /* Lebar dikunci 58mm */
-                margin: 0; 
-                padding: 0; 
-                background: white; 
-                z-index: 99999; 
-            }
-            
-            /* Hilangkan elemen modal bawaan (shadow/border) saat print */
-            .modal-content { 
-                box-shadow: none !important; 
-                border: none !important; 
-                margin: 0 !important; 
-                width: 100% !important; 
-                max-width: 100% !important; 
-                padding: 0 !important;
-            }
-            
-            /* Sembunyikan tombol 'Cetak' saat proses print */
-            #struk-modal button { display: none !important; }
-            
+/* Teks Item: Gunakan flex wrap agar harga tidak menabrak nama barang */
+.struk-item {
+    display: flex;
+    justify-content: space-between;
+    margin-bottom: 8px;
+    font-size: 0.9rem;
+    line-height: 1.3;
+}
+
+.struk-item div:first-child {
+    flex: 1; /* Nama barang ambil sisa ruang */
+    padding-right: 10px; /* Jarak aman dengan harga */
+}
+
+.struk-total {
+    border-top: 2px dashed #000;
+    padding-top: 10px;
+    margin-top: 10px;
+    font-weight: bold;
+    font-size: 1.1rem;
+    display: flex; 
+    justify-content: space-between;
+}
+
+.struk-footer {
+    text-align: center;
+    font-size: 0.8rem;
+    margin-top: 20px;
+    color: #000;
+}
+
+/* === SETTING KHUSUS SAAT DI-PRINT (AGAR PAS DI KERTAS) === */
+@media print {
+    @page {
+        size: 58mm auto; /* Wajib: Beritahu printer ini kertas 58mm */
+        margin: 0mm; 
+    }
+
+    body * { visibility: hidden; } /* Sembunyikan website */
+    
+    #struk-modal, #struk-modal * { visibility: visible; } /* Tampilkan struk */
+
+    #struk-modal {
+        position: absolute;
+        left: 0; top: 0;
+        width: 100%;
+        margin: 0; padding: 0;
+        background: white;
+    }
+
+    /* PAKSA UKURAN JADI KECIL SAAT PRINT SAJA */
+    .struk-container {
+        width: 100%;       /* Penuhi lebar kertas */
+        max-width: 58mm;   /* Kunci di 58mm */
+        padding: 2px 0;    /* Hemat tempat */
+        border: none;      /* Hilangkan garis kotak */
+        box-shadow: none;
+    }
+
+    /* Kecilkan font sedikit khusus saat print agar muat */
+    .struk-title h3 { font-size: 0.8rem; }
+    .struk-item { font-size: 0.75rem; margin-bottom: 4px; }
+    .struk-total { font-size: 0.85rem; }
+    .struk-footer { font-size: 0.6rem; }
+    .struk-logo { width: 35px; } /* Kecilkan logo dikit */
+
+    /* Sembunyikan tombol cetak di hasil print */
+    .modal-content button { display: none !important; }
+    #struk-modal button { display: none !important; }
+}
             /* Pastikan teks hitam penuh */
             .struk-container {
                 width: 100%;
