@@ -1,0 +1,16 @@
+{
+  "name": "Toko Obat Bintan Jaya",
+  "short_name": "Bintan Jaya",
+  "start_url": "./",
+  "display": "standalone",
+  "background_color": "#f1f2f6",
+  "theme_color": "#00b894",
+  "description": "Aplikasi Toko Obat Bintan Jaya - Belanja obat mudah dari rumah.",
+  "icons": [
+    {
+      "src": "icon-512.png",
+      "sizes": "512x512",
+      "type": "image/png"
+    }
+  ]
+}
