@@ -4,6 +4,9 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Toko Obat Bintan Jaya - Official Web</title>
+    <link rel="manifest" href="manifest.json">
+    <meta name="theme-color" content="#00b894">
+    <link rel="apple-touch-icon" href="icon-512.png">
     <script src="https://cdnjs.cloudflare.com/ajax/libs/PapaParse/5.3.0/papaparse.min.js"></script>
     <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
     
@@ -206,7 +209,7 @@
         .search-box input { width: 100%; padding: 12px 20px; border: 1px solid #dfe6e9; border-radius: 50px; font-size: 0.95rem; outline: none; background: #f8f9fa; font-family: inherit; margin-bottom: 15px; }
         .search-box input:focus { border-color: var(--primary); background: white; }
         .filter-row { display: flex; gap: 10px; flex-wrap: wrap; align-items: center; }
-        .filter-select { padding: 10px 15px; border-radius: 12px; border: 1px solid #dfe6e9; font-size: 0.85rem; flex: 1; min-width: 130px; outline: none; cursor: pointer; font-family: inherit; transition: 0.3s; }
+        .filter-select { padding: 10px 15px; border-radius: 12px; border: 1px solid #dfe6e9; font-size: 0.8rem; flex: 1; min-width: 130px; outline: none; cursor: pointer; font-family: inherit; transition: 0.3s; }
         .filter-select:disabled { background-color: #f1f2f6; color: #b2bec3; cursor: not-allowed; border-color: #eee; }
         .sort-btn-group { display: flex; gap: 5px; }
         .btn-sort { background: white; border: 1px solid #dfe6e9; padding: 8px 12px; border-radius: 8px; font-size: 0.8rem; cursor: pointer; color: #636e72; font-weight: 500; }
@@ -428,6 +431,89 @@
             .nav-right { gap: 15px; font-size: 0.8rem; }
             .cart-table th:nth-child(2), .cart-table td:nth-child(2) { display: none; }
         }
+
+        /* === TAMBAHAN FITUR FAQ (TANYA JAWAB) === */
+        
+        /* 1. Tombol Melayang (Posisi di atas Tombol WA) */
+        .btn-faq-float {
+            position: fixed; 
+            bottom: 95px; /* Jarak dari bawah (supaya pas di atas tombol WA) */
+            right: 25px;  /* Jarak dari kanan */
+            width: 50px; 
+            height: 50px; 
+            background: white; 
+            color: var(--secondary); /* Warna Biru */
+            border-radius: 50%; 
+            box-shadow: 0 5px 15px rgba(0,0,0,0.15);
+            display: flex; 
+            align-items: center; 
+            justify-content: center;
+            z-index: 2900; 
+            cursor: pointer; 
+            font-size: 1.5rem; 
+            border: 2px solid white;
+            transition: all 0.3s ease;
+        }
+        
+        .btn-faq-float:hover { 
+            transform: scale(1.1); 
+            color: var(--primary); 
+            border-color: var(--primary);
+        }
+
+        /* Jika ada Bottom Bar (Info Berjalan), tombol naik sedikit */
+        body.has-bottom-bar .btn-faq-float { bottom: 130px; }
+
+        /* 2. Gaya Accordion (Buka-Tutup) di dalam Modal */
+        details.faq-item {
+            border: 1px solid #f1f2f6;
+            border-radius: 10px;
+            padding: 10px 15px;
+            margin-bottom: 10px;
+            background: #fff;
+            transition: all 0.3s;
+        }
+        
+        details.faq-item[open] {
+            border-color: var(--primary);
+            background: #e0f2f1; /* Hijau muda saat dibuka */
+        }
+
+        summary.faq-question {
+            font-weight: 600;
+            font-size: 0.9rem;
+            cursor: pointer;
+            list-style: none; /* Hilangkan panah default browser */
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            color: var(--dark);
+        }
+
+        /* Hapus panah default di Chrome/Safari */
+        summary.faq-question::-webkit-details-marker { display: none; }
+
+        /* Ganti dengan ikon +/- Custom */
+        summary.faq-question::after {
+            content: '+';
+            font-size: 1.2rem;
+            color: var(--primary);
+            font-weight: 800;
+        }
+
+        details.faq-item[open] summary.faq-question::after {
+            content: '-';
+            color: var(--promo-red);
+        }
+
+        .faq-answer {
+            margin-top: 10px;
+            font-size: 0.9rem;
+            color: #636e72;
+            line-height: 1.6;
+            padding-top: 10px;
+            border-top: 1px dashed #ccc;
+        }
     </style>
 </head>
 <body>
@@ -443,6 +529,69 @@
         <h2 style="color:var(--dark);">TOKO SEDANG TUTUP</h2>
         <p style="color:#636e72; max-width:400px; margin:0 auto; line-height:1.6;">Mohon maaf, kami sedang melakukan stok opname atau istirahat. Silakan kembali lagi nanti.</p>
         <div style="margin-top:20px; color:var(--primary); font-weight:600;">Toko Obat Bintan Jaya</div>
+    </div>
+
+    <div class="btn-faq-float" onclick="openFAQModal()" title="Bantuan / FAQ">
+        ❓
+    </div>
+
+    <div id="faq-modal" class="modal" style="z-index: 9999;">
+        <div class="modal-content" style="max-width: 500px;">
+            <button onclick="closeModal('faq-modal')" style="position:absolute; right:15px; top:10px; background:none; border:none; font-size:1.5rem; cursor:pointer;">✕</button>
+            
+            <div style="text-align:center; margin-bottom:20px;">
+                <div style="font-size:3rem; margin-bottom:5px;">💁🏻‍♂️</div>
+                <h3 style="margin:0; color:var(--primary-dark);">Pertanyaan Umum</h3>
+                <p style="font-size:0.85rem; color:#636e72;">Info seputar operasional Toko Obat Bintan Jaya</p>
+            </div>
+
+            <details class="faq-item">
+                <summary class="faq-question">🏪 Toko buka jam berapa?</summary>
+                <div class="faq-answer">
+                    Kami buka setiap hari (Senin - Minggu)<br>
+                    <b>Pukul 08.00 - 22.00 WIB.</b>
+                </div>
+            </details>
+
+            <details class="faq-item">
+                <summary class="faq-question">🛵 Apakah bisa Pesan Antar (Delivery)?</summary>
+                <div class="faq-answer">
+                    <b>Mohon maaf, saat ini kami TIDAK menyediakan kurir pengantaran toko.</b><br><br>
+                    Kami hanya melayani sistem <b>Pick Up (Ambil Sendiri)</b>. Anda bisa memesan kurir online (Gojek/Maxim) secara mandiri untuk mengambil pesanan yang sudah siap di kasir.
+                </div>
+            </details>
+
+            <details class="faq-item">
+                <summary class="faq-question">💰 Cara pembayarannya bagaimana?</summary>
+                <div class="faq-answer">
+                    Ada 2 cara mudah:<br>
+                    1. <b>Tunai (Cash):</b> Bayar saat ambil barang di kasir.<br>
+                    2. <b>Transfer Bank:</b> Bayar saat pesanan selesai checkout di web (sebelum barang diambil).
+                </div>
+            </details>
+
+            <details class="faq-item">
+                <summary class="faq-question">✅ Apakah obatnya Asli?</summary>
+                <div class="faq-answer">
+                    <b>100% Asli & Aman.</b><br>
+                    Toko kami memiliki izin resmi dan diawasi langsung oleh Tenaga Teknis Kefarmasian, sesuai prinsip <b>F.A.S.T</b> (Fatonah, Amanah, Siddiq, Tabligh).
+                </div>
+            </details>
+
+            <details class="faq-item">
+                <summary class="faq-question">📍 Lokasi tokonya di mana?</summary>
+                <div class="faq-answer">
+                    Alamat: <b>Jl. Bintan No.29, Dumai Timur.</b><br><br>
+                    <a href="https://goo.gl/maps/Yv6gG9qXz8x" target="_blank" class="btn-med" style="background:#0984e3; color:white; padding:8px 15px; font-size:0.8rem; text-decoration:none;">🗺️ Buka Google Maps</a>
+                </div>
+            </details>
+
+            <div style="margin-top:20px; text-align:center; font-size:0.8rem; background:#f8f9fa; padding:10px; border-radius:8px;">
+                Masih butuh bantuan?<br>
+                <a href="javascript:void(0)" onclick="closeModal('faq-modal'); openChatModal();" style="color:var(--wa-color); font-weight:700;">Chat Admin via WA &rarr;</a>
+            </div>
+
+        </div>
     </div>
 
     <div class="btn-chat-float" onclick="openChatModal()">
@@ -462,7 +611,7 @@
             <label style="font-weight:600; display:block; margin-bottom:5px;">Pertanyaan / Pesan</label>
             <textarea id="chat-msg" class="checkout-input" rows="4" placeholder="Tulis pertanyaan Anda disini..."></textarea>
             
-            <button onclick="sendChat()" class="btn-med" style="width:100%; background:var(--wa-color); color:white; padding:12px;">KIRIM KE W➡️</button>
+            <button onclick="sendChat()" class="btn-med" style="width:100%; background:var(--wa-color); color:white; padding:12px;">KIRIM KE WA➡️</button>
         </div>
     </div>
 
@@ -1192,6 +1341,11 @@
         function closeModal(id) { 
             document.getElementById(id).style.display = 'none'; 
             
+            // FIX BUG: Reset input chat jika modal chat ditutup
+            if(id === 'chat-modal') {
+                 document.getElementById('chat-msg').value = '';
+            }
+
             if(id === 'compare-modal') { 
                 compareList = []; 
                 document.getElementById('compare-bar').classList.remove('show'); 
@@ -1593,6 +1747,21 @@
         function adminLogin() { document.getElementById('admin-login-form').style.display = 'block'; document.getElementById('admin-dashboard').style.display = 'none'; document.getElementById('login-modal').style.display = 'block'; }
         function checkAdmin() { if(document.getElementById('admin-pass').value === APP_CONFIG.pass_admin) { showToast("Login Berhasil!"); document.getElementById('admin-login-form').style.display = 'none'; document.getElementById('admin-dashboard').style.display = 'block'; } else { showToast("Password Salah!", true); } }
         function openAdminLink(type) { let url = ""; if(type === 'master') url = APP_CONFIG.link_master; if(type === 'form') url = APP_CONFIG.link_form; if(type === 'laporan') url = APP_CONFIG.link_laporan; if(url && url.length > 5) window.open(url, '_blank'); else showToast("Link belum disetting di Excel", true); }
+    
+        // --- FUNGSI BARU: BUKA MODAL FAQ ---
+        function openFAQModal() {
+            document.getElementById('faq-modal').style.display = 'block';
+        }
     </script>
+<script>
+    // PWA REGISTRATION SCRIPT
+    if ('serviceWorker' in navigator) {
+        window.addEventListener('load', () => {
+            navigator.serviceWorker.register('./service-worker.js')
+                .then(reg => console.log('PWA Service Worker Registered!', reg))
+                .catch(err => console.log('PWA Error:', err));
+        });
+    }
+</script>
 </body>
 </html>
