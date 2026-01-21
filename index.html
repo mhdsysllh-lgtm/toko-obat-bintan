@@ -422,15 +422,15 @@
         .struk-footer { text-align: center; font-size: 0.8rem; margin-top: 20px; color: #666; }
         .admin-ongkir-input { width: 100px; padding: 5px; font-family: inherit; border: 1px solid #ccc; border-radius: 5px; text-align: right; font-size: 0.9rem; }
 
-/* === SETTING PRINTER 58MM (FIX LOGO & LAYOUT) === */
+/* === SETTING PRINTER 58MM (VERSI RAPI & LEGA) === */
 @media print {
-    /* 1. Paksa browser tahu ini kertas 58mm */
+    /* 1. Atur Kertas */
     @page { 
         size: 58mm auto; 
         margin: 0mm; 
     }
 
-    /* 2. Sembunyikan elemen website lain */
+    /* 2. Reset Tampilan */
     body * { visibility: hidden; }
     #struk-modal, #struk-modal * { visibility: visible; }
     #struk-modal { 
@@ -440,72 +440,88 @@
         background: white; 
     }
     
-    /* 3. Container Struk - Kunci Lebar Aman */
+    /* 3. Container Struk (Diberi Jarak Kiri-Kanan) */
     .struk-container {
         width: 100%;
-        max-width: 48mm; /* Area cetak efektif 58mm dikurangi margin */
-        margin: 0 auto;  /* Tengah */
-        padding: 0 2px;  /* Sedikit padding kiri-kanan */
+        max-width: 48mm; 
+        margin: 0 auto;
+        
+        /* INI KUNCINYA: Padding kiri-kanan agar logo TIDAK MENTOK pinggir */
+        padding: 0 4mm; 
+        
         border: none;
     }
 
-    /* 4. HEADER BARU (MENGGUNAKAN TABLE LAYOUT) - LEBIH KUAT */
-    /* Ini rahasianya agar logo tidak menimpa teks */
+    /* 4. HEADER FLEX (Logo - Teks - Logo) */
     .struk-header-row {
-        display: table;     /* Ubah jadi tabel */
-        width: 100%;
-        table-layout: fixed; /* Kunci ukuran kolom */
+        display: flex;
+        align-items: center;
+        justify-content: space-between; /* Jarak otomatis antar elemen */
+        gap: 5px; /* Jarak aman antar logo dan teks */
         margin-bottom: 5px;
-        border-bottom: 1px dashed #000; /* Garis pemisah header */
+        border-bottom: 1px dashed #000;
         padding-bottom: 5px;
     }
 
-    /* Logo Kiri (Sel Tabel 1) */
-    .struk-header-row > *:nth-child(1) {
-        display: table-cell;
-        width: 40px;        /* Lebar pasti */
-        vertical-align: middle;
-        text-align: left;
+    /* LOGO: Dikecilkan jadi 30px (Manis, tidak sesak) */
+    .struk-logo { 
+        width: 30px; 
+        height: auto; 
+        object-fit: contain;
     }
 
-    /* Judul Tengah (Sel Tabel 2) */
-    .struk-header-row > *:nth-child(2) {
-        display: table-cell;
-        vertical-align: middle;
+    /* JUDUL: Normal & Rapi */
+    .struk-title {
+        flex: 1; /* Ambil sisa ruang di tengah */
         text-align: center;
-        padding: 0 2px;     /* Jarak aman dari logo */
     }
-
-    /* Logo Kanan (Sel Tabel 3) */
-    .struk-header-row > *:nth-child(3) {
-        display: table-cell;
-        width: 40px;        /* Lebar pasti */
-        vertical-align: middle;
-        text-align: right;
-    }
-
-    /* Atur Ukuran Gambar Logo & Font */
-    .struk-logo { width: 40px; height: auto; }
-    .struk-title h3 { font-size: 8pt; line-height: 1.1; font-weight: 800; margin-bottom: 2px; }
-    .struk-title p { font-size: 6pt; margin: 0; }
-
-    /* Bagian Body Struk */
-    .struk-body, .struk-footer { width: 100%; }
-    .struk-item { font-size: 8pt; margin-bottom: 2px; display: flex; justify-content: space-between; }
     
-    /* Total & Footer */
+    .struk-title h3 { 
+        font-size: 8pt; 
+        line-height: 1.2; 
+        font-weight: 800; 
+        margin: 0;
+        /* Memaksa turun baris jika kepanjangan */
+        word-wrap: break-word; 
+    }
+
+    /* Teks Tanggal Kecil */
+    .struk-title p { 
+        font-size: 6pt; 
+        margin-top: 2px; 
+    }
+
+    /* ITEM & HARGA */
+    .struk-body { width: 100%; }
+    .struk-item { 
+        font-size: 8pt; 
+        margin-bottom: 3px; 
+        display: flex; 
+        justify-content: space-between; 
+    }
+    
+    /* TOTAL BAYAR */
     .struk-total { 
-        font-size: 10pt; /* Total diperbesar sedikit */
+        font-size: 9pt; 
+        font-weight: bold;
         border-top: 1px dashed #000; 
         margin-top: 5px; 
         padding-top: 5px;
+        display: flex;
+        justify-content: space-between;
     }
-    .struk-footer { font-size: 7pt; margin-top: 10px; text-align: center; }
 
-    /* Hilangkan Tombol */
+    /* FOOTER */
+    .struk-footer { 
+        font-size: 7pt; 
+        margin-top: 10px; 
+        text-align: center; 
+        color: #000;
+    }
+
+    /* Sembunyikan Tombol */
     .modal-content button, #struk-modal button { display: none !important; }
 }
-
         @media (max-width: 768px) {
             .grid { grid-template-columns: repeat(2, 1fr); gap: 15px; }
             .promo-banner { flex-direction: column-reverse; text-align: center; padding: 30px; }
