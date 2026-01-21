@@ -414,13 +414,45 @@
         .struk-footer { text-align: center; font-size: 0.8rem; margin-top: 20px; color: #666; }
         .admin-ongkir-input { width: 100px; padding: 5px; font-family: inherit; border: 1px solid #ccc; border-radius: 5px; text-align: right; font-size: 0.9rem; }
 
-        @media print {
-            body * { visibility: hidden; }
-            #struk-modal, #struk-modal * { visibility: visible; }
-            #struk-modal { position: absolute; left: 0; top: 0; width: 100%; margin: 0; padding: 0; background: white; z-index: 99999; }
-            .modal-content { box-shadow: none; border: none; margin: 0; width: 100%; max-width: 100%; }
-            #struk-modal button { display: none !important; }
-        }
+@media print {
+    @page {
+        size: 58mm auto; /* Wajib: Beritahu printer ini kertas 58mm */
+        margin: 0mm;     /* Hapus margin putih bawaan browser */
+    }
+
+    body * { visibility: hidden; } /* Sembunyikan website utama */
+    
+    #struk-modal, #struk-modal * { visibility: visible; } /* Hanya tampilkan struk */
+
+    #struk-modal {
+        position: absolute;
+        left: 0; top: 0;
+        width: 100%;
+        margin: 0; padding: 0;
+        background: white;
+    }
+
+    /* PAKSA UKURAN JADI KECIL AGAR PAS DI KERTAS */
+    .struk-container {
+        width: 100%;       /* Penuhi lebar kertas */
+        max-width: 48mm;   /* Batas aman area cetak (58mm - margin) */
+        padding: 0;        
+        border: none;      /* Hilangkan garis kotak saat print */
+        box-shadow: none;
+        margin: 0 auto;    /* Tengah */
+    }
+
+    /* Kecilkan font sedikit khusus saat print agar muat */
+    .struk-title h3 { font-size: 9pt; }
+    .struk-item { font-size: 8pt; margin-bottom: 2px; }
+    .struk-total { font-size: 9pt; }
+    .struk-footer { font-size: 7pt; }
+    .struk-logo { width: 30px; } 
+
+    /* Sembunyikan tombol cetak di hasil print */
+    .modal-content button { display: none !important; }
+    #struk-modal button { display: none !important; }
+}
 
         @media (max-width: 768px) {
             .grid { grid-template-columns: repeat(2, 1fr); gap: 15px; }
@@ -1761,3 +1793,4 @@
 </script>
 </body>
 </html>
+
