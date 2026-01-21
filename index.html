@@ -422,15 +422,15 @@
         .struk-footer { text-align: center; font-size: 0.8rem; margin-top: 20px; color: #666; }
         .admin-ongkir-input { width: 100px; padding: 5px; font-family: inherit; border: 1px solid #ccc; border-radius: 5px; text-align: right; font-size: 0.9rem; }
 
-/* === SETTING PRINTER 58MM (VERSI PRESISI & RAPI) === */
+/* === SETTING PRINTER 58MM (FINAL - FOOTER NAIK) === */
 @media print {
-    /* 1. Reset Ukuran Kertas */
+    /* 1. Reset Kertas */
     @page { 
         size: 58mm auto; 
         margin: 0mm; 
     }
 
-    /* 2. Sembunyikan Elemen Lain */
+    /* 2. Sembunyikan Website Utama */
     body * { visibility: hidden; }
     #struk-modal, #struk-modal * { visibility: visible; }
     #struk-modal { 
@@ -440,15 +440,12 @@
         background: white; 
     }
     
-    /* 3. Container Struk (Pengatur Jarak Pinggir) */
+    /* 3. Container Struk */
     .struk-container {
         width: 100%;
-        max-width: 48mm; /* Lebar area cetak */
-        margin: 0 auto;  /* Posisi tengah */
-        
-        /* PADDING 3mm: Agar logo & teks tidak mentok ke pinggir kertas */
-        padding: 0 3mm;  
-        
+        max-width: 48mm; 
+        margin: 0 auto;
+        padding: 0 3mm; /* Jarak aman kiri-kanan */
         border: none;
     }
 
@@ -458,53 +455,48 @@
         align-items: center;
         justify-content: space-between;
         margin-bottom: 5px;
-        border-bottom: 1px dashed #000; /* Garis pemisah tipis */
+        border-bottom: 1px dashed #000;
         padding-bottom: 5px;
     }
 
-    /* Logo: Ukuran 25px (Sangat Pas/Tidak Dominan) */
-    .struk-logo { 
-        width: 25px; 
-        height: auto; 
-    }
+    .struk-logo { width: 25px; height: auto; }
 
-    /* Judul Toko: Ukuran Sedang & Tegas */
     .struk-title {
         flex: 1;
         text-align: center;
         padding: 0 2px;
     }
     .struk-title h3 { 
-        font-size: 8pt; /* Ukuran Judul */
+        font-size: 8pt; 
         line-height: 1.2; 
         font-weight: 800; 
         margin: 0;
     }
     .struk-title p { 
-        font-size: 6pt; /* Tanggal kecil */
+        font-size: 6pt; 
         margin: 0; 
     }
 
-    /* 5. ISI STRUK (DIPERKECIL BIAR PRESISI) */
+    /* 5. ISI STRUK */
     .struk-body { width: 100%; }
     
     .struk-item { 
-        font-size: 7pt; /* HURUF KECIL (Standar Struk) - Rapi & Tajam */
+        font-size: 7pt; 
         margin-bottom: 2px; 
         display: flex; 
         justify-content: space-between; 
         line-height: 1.2;
     }
     
-    /* Info Alamat Pengambilan (Kecilkan juga) */
+    /* Info Alamat (Tengah) */
     .struk-container > div[style*="text-align:center"] {
         font-size: 7pt !important;
-        margin-bottom: 10px !important;
+        margin-bottom: 5px !important; /* Jarak alamat ke isi dipersingkat */
     }
 
     /* 6. TOTAL BAYAR */
     .struk-total { 
-        font-size: 8pt; /* Sedikit lebih besar dari isi */
+        font-size: 8pt; 
         font-weight: bold;
         border-top: 1px dashed #000; 
         margin-top: 5px; 
@@ -513,15 +505,19 @@
         justify-content: space-between;
     }
 
-    /* 7. FOOTER */
+    /* 7. FOOTER (SUDAH DINAIKKAN) */
     .struk-footer { 
-        font-size: 6pt; /* Footer kecil saja */
+        font-size: 6pt; 
+        
+        /* INI PERUBAHANNYA: Jarak dikurangi jadi 5px (sebelumnya 10px) */
         margin-top: 5px; 
+        
         text-align: center; 
         color: #000;
+        line-height: 1.2;
     }
 
-    /* Hilangkan Tombol Cetak saat Print */
+    /* Hilangkan Tombol */
     .modal-content button, #struk-modal button { display: none !important; }
 }
         @media (max-width: 768px) {
@@ -1869,4 +1865,3 @@
 </script>
 </body>
 </html>
-
