@@ -422,15 +422,15 @@
         .struk-footer { text-align: center; font-size: 0.8rem; margin-top: 20px; color: #666; }
         .admin-ongkir-input { width: 100px; padding: 5px; font-family: inherit; border: 1px solid #ccc; border-radius: 5px; text-align: right; font-size: 0.9rem; }
 
-/* === SETTING PRINTER 58MM (VERSI RAPI & LEGA) === */
+/* === SETTING PRINTER 58MM (VERSI PRESISI & RAPI) === */
 @media print {
-    /* 1. Atur Kertas */
+    /* 1. Reset Ukuran Kertas */
     @page { 
         size: 58mm auto; 
         margin: 0mm; 
     }
 
-    /* 2. Reset Tampilan */
+    /* 2. Sembunyikan Elemen Lain */
     body * { visibility: hidden; }
     #struk-modal, #struk-modal * { visibility: visible; }
     #struk-modal { 
@@ -440,69 +440,71 @@
         background: white; 
     }
     
-    /* 3. Container Struk (Diberi Jarak Kiri-Kanan) */
+    /* 3. Container Struk (Pengatur Jarak Pinggir) */
     .struk-container {
         width: 100%;
-        max-width: 48mm; 
-        margin: 0 auto;
+        max-width: 48mm; /* Lebar area cetak */
+        margin: 0 auto;  /* Posisi tengah */
         
-        /* INI KUNCINYA: Padding kiri-kanan agar logo TIDAK MENTOK pinggir */
-        padding: 0 4mm; 
+        /* PADDING 3mm: Agar logo & teks tidak mentok ke pinggir kertas */
+        padding: 0 3mm;  
         
         border: none;
     }
 
-    /* 4. HEADER FLEX (Logo - Teks - Logo) */
+    /* 4. HEADER: Logo Kecil & Judul Tengah */
     .struk-header-row {
         display: flex;
         align-items: center;
-        justify-content: space-between; /* Jarak otomatis antar elemen */
-        gap: 5px; /* Jarak aman antar logo dan teks */
+        justify-content: space-between;
         margin-bottom: 5px;
-        border-bottom: 1px dashed #000;
+        border-bottom: 1px dashed #000; /* Garis pemisah tipis */
         padding-bottom: 5px;
     }
 
-    /* LOGO: Dikecilkan jadi 30px (Manis, tidak sesak) */
+    /* Logo: Ukuran 25px (Sangat Pas/Tidak Dominan) */
     .struk-logo { 
-        width: 30px; 
+        width: 25px; 
         height: auto; 
-        object-fit: contain;
     }
 
-    /* JUDUL: Normal & Rapi */
+    /* Judul Toko: Ukuran Sedang & Tegas */
     .struk-title {
-        flex: 1; /* Ambil sisa ruang di tengah */
+        flex: 1;
         text-align: center;
+        padding: 0 2px;
     }
-    
     .struk-title h3 { 
-        font-size: 8pt; 
+        font-size: 8pt; /* Ukuran Judul */
         line-height: 1.2; 
         font-weight: 800; 
         margin: 0;
-        /* Memaksa turun baris jika kepanjangan */
-        word-wrap: break-word; 
     }
-
-    /* Teks Tanggal Kecil */
     .struk-title p { 
-        font-size: 6pt; 
-        margin-top: 2px; 
+        font-size: 6pt; /* Tanggal kecil */
+        margin: 0; 
     }
 
-    /* ITEM & HARGA */
+    /* 5. ISI STRUK (DIPERKECIL BIAR PRESISI) */
     .struk-body { width: 100%; }
+    
     .struk-item { 
-        font-size: 8pt; 
-        margin-bottom: 3px; 
+        font-size: 7pt; /* HURUF KECIL (Standar Struk) - Rapi & Tajam */
+        margin-bottom: 2px; 
         display: flex; 
         justify-content: space-between; 
+        line-height: 1.2;
     }
     
-    /* TOTAL BAYAR */
+    /* Info Alamat Pengambilan (Kecilkan juga) */
+    .struk-container > div[style*="text-align:center"] {
+        font-size: 7pt !important;
+        margin-bottom: 10px !important;
+    }
+
+    /* 6. TOTAL BAYAR */
     .struk-total { 
-        font-size: 9pt; 
+        font-size: 8pt; /* Sedikit lebih besar dari isi */
         font-weight: bold;
         border-top: 1px dashed #000; 
         margin-top: 5px; 
@@ -511,15 +513,15 @@
         justify-content: space-between;
     }
 
-    /* FOOTER */
+    /* 7. FOOTER */
     .struk-footer { 
-        font-size: 7pt; 
+        font-size: 6pt; /* Footer kecil saja */
         margin-top: 10px; 
         text-align: center; 
         color: #000;
     }
 
-    /* Sembunyikan Tombol */
+    /* Hilangkan Tombol Cetak saat Print */
     .modal-content button, #struk-modal button { display: none !important; }
 }
         @media (max-width: 768px) {
