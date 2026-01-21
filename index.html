@@ -140,12 +140,11 @@
 
         /* FLOATING CHAT BUTTON (MAIN) */
         .btn-chat-float {
-            position: fixed; bottom: 25px; right: 20px;
-            width: 60px; height: 60px; background-color: var(--wa-color); color: white;
+            position: fixed; bottom: 25px; right: 25px;
+            width: 50px; height: 50px; background-color: var(--wa-color); color: white;
             border-radius: 50%; box-shadow: 0 5px 20px rgba(37, 211, 102, 0.4);
             display: flex; align-items: center; justify-content: center;
             z-index: 2900; cursor: pointer; transition: all 0.3s ease;
-            animation: floatUp 3s infinite ease-in-out; border: 2px solid white; font-size: 2rem;
         }
         .btn-chat-float:hover { transform: translateY(-5px) scale(1.1); }
         @keyframes floatUp { 0%, 100% { transform: translateY(0); } 50% { transform: translateY(-5px); } }
@@ -402,113 +401,27 @@
         .maintenance-icon { font-size: 4rem; margin-bottom: 20px; animation: bounce 2s infinite; }
         @keyframes bounce { 0%, 20%, 50%, 80%, 100% {transform: translateY(0);} 40% {transform: translateY(-20px);} 60% {transform: translateY(-10px);} }
 
-/* === CSS TAMPILAN STRUK (AGAR BAGUS DI LAYAR HP) === */
-.struk-container {
-    font-family: 'Courier New', Courier, monospace;
-    background: #fff;
-    padding: 15px;
-    
-    /* Di layar HP kita buat agak lebar biar enak dilihat */
-    width: 100%;
-    max-width: 350px; 
-    
-    margin: 0 auto;
-    border: 1px solid #ddd;   /* Pakai garis tepi biar rapi di layar */
-    box-shadow: 0 5px 15px rgba(0,0,0,0.1);
-    color: #000;
-}
+        /* STRUK CSS */
+        .struk-container { font-family: 'Courier New', Courier, monospace; background: #fff; padding: 20px; border: 1px solid #ddd; max-width: 400px; margin: 0 auto; box-shadow: 0 5px 15px rgba(0,0,0,0.1); }
+        .struk-header-row { display: flex; align-items: center; justify-content: center; gap: 15px; border-bottom: 2px dashed #000; padding-bottom: 10px; margin-bottom: 15px; }
+        .struk-logo { width: 50px; height: auto; object-fit: contain; }
+        .struk-title { text-align: center; padding: 0 5px; }
+        .struk-title h3 { margin: 0; font-size: 1rem; line-height: 1.2; }
+        .struk-title p { margin: 0; font-size: 0.7rem; }
+        .struk-body { margin-bottom: 15px; }
+        .struk-item { display: flex; justify-content: space-between; margin-bottom: 5px; font-size: 0.9rem; }
+        .struk-total { border-top: 2px dashed #000; padding-top: 10px; margin-top: 10px; font-weight: bold; font-size: 1.1rem;}
+        .struk-footer { text-align: center; font-size: 0.8rem; margin-top: 20px; color: #666; }
+        .admin-ongkir-input { width: 100px; padding: 5px; font-family: inherit; border: 1px solid #ccc; border-radius: 5px; text-align: right; font-size: 0.9rem; }
 
-.struk-header-row {
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    gap: 10px;
-    border-bottom: 2px dashed #000;
-    padding-bottom: 10px;
-    margin-bottom: 15px;
-}
-
-.struk-logo { width: 50px; height: auto; object-fit: contain; }
-.struk-title { text-align: center; }
-.struk-title h3 { margin: 0; font-size: 1rem; line-height: 1.2; font-weight: 800; }
-.struk-title p { margin: 0; font-size: 0.7rem; }
-
-/* Teks Item: Gunakan flex wrap agar harga tidak menabrak nama barang */
-.struk-item {
-    display: flex;
-    justify-content: space-between;
-    margin-bottom: 8px;
-    font-size: 0.9rem;
-    line-height: 1.3;
-}
-
-.struk-item div:first-child {
-    flex: 1; /* Nama barang ambil sisa ruang */
-    padding-right: 10px; /* Jarak aman dengan harga */
-}
-
-.struk-total {
-    border-top: 2px dashed #000;
-    padding-top: 10px;
-    margin-top: 10px;
-    font-weight: bold;
-    font-size: 1.1rem;
-    display: flex; 
-    justify-content: space-between;
-}
-
-.struk-footer {
-    text-align: center;
-    font-size: 0.8rem;
-    margin-top: 20px;
-    color: #000;
-}
-
-/* === SETTING KHUSUS SAAT DI-PRINT (AGAR PAS DI KERTAS) === */
-@media print {
-    @page {
-        size: 58mm auto; /* Wajib: Beritahu printer ini kertas 58mm */
-        margin: 0mm; 
-    }
-
-    body * { visibility: hidden; } /* Sembunyikan website */
-    
-    #struk-modal, #struk-modal * { visibility: visible; } /* Tampilkan struk */
-
-    #struk-modal {
-        position: absolute;
-        left: 0; top: 0;
-        width: 100%;
-        margin: 0; padding: 0;
-        background: white;
-    }
-
-    /* PAKSA UKURAN JADI KECIL SAAT PRINT SAJA */
-    .struk-container {
-        width: 100%;       /* Penuhi lebar kertas */
-        max-width: 58mm;   /* Kunci di 58mm */
-        padding: 2px 0;    /* Hemat tempat */
-        border: none;      /* Hilangkan garis kotak */
-        box-shadow: none;
-    }
-
-    /* Kecilkan font sedikit khusus saat print agar muat */
-    .struk-title h3 { font-size: 0.8rem; }
-    .struk-item { font-size: 0.75rem; margin-bottom: 4px; }
-    .struk-total { font-size: 0.85rem; }
-    .struk-footer { font-size: 0.6rem; }
-    .struk-logo { width: 35px; } /* Kecilkan logo dikit */
-
-    /* Sembunyikan tombol cetak di hasil print */
-    .modal-content button { display: none !important; }
-    #struk-modal button { display: none !important; }
-}
-            /* Pastikan teks hitam penuh */
-            .struk-container {
-                width: 100%;
-                max-width: 100%;
-            }
+        @media print {
+            body * { visibility: hidden; }
+            #struk-modal, #struk-modal * { visibility: visible; }
+            #struk-modal { position: absolute; left: 0; top: 0; width: 100%; margin: 0; padding: 0; background: white; z-index: 99999; }
+            .modal-content { box-shadow: none; border: none; margin: 0; width: 100%; max-width: 100%; }
+            #struk-modal button { display: none !important; }
         }
+
         @media (max-width: 768px) {
             .grid { grid-template-columns: repeat(2, 1fr); gap: 15px; }
             .promo-banner { flex-direction: column-reverse; text-align: center; padding: 30px; }
@@ -832,7 +745,7 @@
             <div class="alert-ongkir"><span style="font-size:1.2rem;">ℹ️</span> <div><b>Informasi Pengiriman:</b><br>Toko kami tidak menyediakan jasa pengiriman langsung. Silakan ambil pesanan di lokasi atau gunakan layanan kurir ojol 🛵💨.</div></div>
             <div style="background:white; padding:25px; border-radius:15px; margin-top:20px; text-align:right; border:1px solid #eee;">
                 <div style="color:#636e72; font-size:0.9rem;">Grand Total: <span id="cart-grand-total" style="font-weight:600; color:var(--dark);">Rp 0</span></div>
-                <div style="color:#636e72; margin-bottom:10px; font-size:0.9rem;">Pembulatan: <span id="cart-rounding" style="font-weight:600; color:var(--dark);">Rp 0</span></div>
+                <div style="color:#636e72; margin-bottom:10px; font-size:0.9rem; display:none;">Pembulatan: <span id="cart-rounding" style="font-weight:600; color:var(--dark);">Rp 0</span></div>
                 <div style="font-size:1.4rem; font-weight:700; color:var(--primary-dark);">Total: <span id="cart-final-total">Rp 0</span></div>
                 <button class="btn-med" onclick="openCheckoutModal()" style="width:auto; padding:12px 35px; margin-top:20px; background:var(--wa-color); color:white;">LANJUT PEMESANAN ➡️</button>
             </div>
@@ -1410,11 +1323,9 @@
                 return `<tr><td><div style="font-weight:600;">${item.name}</div><div style="font-size:0.75rem; color:#b2bec3;">${item.type}</div></td><td>${formatRp(price)} <span style="font-size:0.75rem; color:#636e72;">/${item.unit}</span></td><td><div style="display:flex; align-items:center; gap:5px;"><button onclick="updateQty(${idx}, -1)" style="width:25px; border:1px solid #ddd; background:white;">-</button><span>${item.qty}</span><button onclick="updateQty(${idx}, 1)" style="width:25px; border:1px solid #ddd; background:white;">+</button></div></td><td style="font-weight:600;">${formatRp(price * item.qty)}</td><td><button onclick="removeFromCart(${idx})" style="color:#ff7675; border:none; background:none; cursor:pointer;">${String.fromCodePoint(0x2715)}</button></td></tr>`; 
             }).join(''); 
             
-            const rounded = getCustomRounding(total);
-            
             document.getElementById('cart-grand-total').innerText = formatRp(total); 
-            document.getElementById('cart-rounding').innerText = formatRp(rounded); 
-            document.getElementById('cart-final-total').innerText = formatRp(rounded); 
+            document.getElementById('cart-rounding').innerText = "Rp 0"; 
+            document.getElementById('cart-final-total').innerText = formatRp(total); 
         }
 
         function updateQty(idx, val) { cart[idx].qty += val; if(cart[idx].qty < 1) cart.splice(idx, 1); saveCart(); renderCart(); }
@@ -1642,7 +1553,7 @@
                 return String.fromCodePoint(0x1F3F7) + ` ${i.qty} ${i.unit} ${i.name} = ${formatRp(fp * i.qty)}`; 
             }).join('\n'); 
 
-            let roundedTotal = getCustomRounding(grandTotal);
+            let roundedTotal = grandTotal;
 
             const strukData = { 
                 n: name, 
@@ -1661,7 +1572,6 @@
             
             msg += `----------------------------------\n`;
 	        msg += String.fromCodePoint(0x1F4B0) + ` Grand Total: ${formatRp(grandTotal)}\n`;
-            msg += String.fromCodePoint(0x1F504) + ` Pembulatan: ${formatRp(roundedTotal)}\n`;
             msg += String.fromCodePoint(0x2705) + ` Total Bayar: ${formatRp(roundedTotal)}\n`;
             msg += `----------------------------------\n`;
             msg += String.fromCodePoint(0x1F464) + ` Nama: ${name}\n`;
