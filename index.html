@@ -415,39 +415,38 @@
         .admin-ongkir-input { width: 100px; padding: 5px; font-family: inherit; border: 1px solid #ccc; border-radius: 5px; text-align: right; font-size: 0.9rem; }
 
 @media print {
-    @page {
-        size: 58mm auto; /* Wajib: Beritahu printer ini kertas 58mm */
-        margin: 0mm;     /* Hapus margin putih bawaan browser */
-    }
+    @page { size: 58mm auto; margin: 0mm; }
+    body * { visibility: hidden; }
+    #struk-modal, #struk-modal * { visibility: visible; }
+    #struk-modal { position: absolute; left: 0; top: 0; width: 100%; margin: 0; padding: 0; background: white; }
+    .modal-content button, #struk-modal button { display: none !important; }
 
-    body * { visibility: hidden; } /* Sembunyikan website utama */
-    
-    #struk-modal, #struk-modal * { visibility: visible; } /* Hanya tampilkan struk */
-
-    #struk-modal {
-        position: absolute;
-        left: 0; top: 0;
-        width: 100%;
-        margin: 0; padding: 0;
-        background: white;
-    }
-
-    /* PAKSA UKURAN JADI KECIL AGAR PAS DI KERTAS */
     .struk-container {
-        width: 100%;       /* Penuhi lebar kertas */
-        max-width: 48mm;   /* Batas aman area cetak (58mm - margin) */
-        padding: 0;        
-        border: none;      /* Hilangkan garis kotak saat print */
-        box-shadow: none;
-        margin: 0 auto;    /* Tengah */
+        width: 100%;
+        max-width: 48mm; /* Lebar aman */
+        margin: 0 auto;
+        padding: 0;
+        border: none;
     }
 
-    /* Kecilkan font sedikit khusus saat print agar muat */
-    .struk-title h3 { font-size: 9pt; }
+    /* HEADER: Jarak diperkecil biar logo besar muat */
+    .struk-header-row {
+        gap: 2px; /* Jarak antar logo dan teks sangat rapat */
+        justify-content: space-between; /* Logo mepet kiri-kanan */
+    }
+
+    /* LOGO: Diperbesar */
+    .struk-logo { 
+        width: 45px; /* Ukuran diperbesar (Maksimal rekomendasi 45-50px) */
+        height: auto;
+    }
+
+    /* FONT: Disesuaikan */
+    .struk-title h3 { font-size: 8pt; line-height: 1.1; } /* Judul sedikit mengecil */
+    .struk-title p { font-size: 6pt; }
     .struk-item { font-size: 8pt; margin-bottom: 2px; }
     .struk-total { font-size: 9pt; }
     .struk-footer { font-size: 7pt; }
-    .struk-logo { width: 45px; height: auto; } 
 
     /* Sembunyikan tombol cetak di hasil print */
     .modal-content button { display: none !important; }
@@ -1793,5 +1792,6 @@
 </script>
 </body>
 </html>
+
 
 
