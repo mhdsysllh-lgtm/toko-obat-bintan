@@ -9,8 +9,8 @@
       gtag('js', new Date());
 
       gtag('config', 'G-1HCMHTRHNT');
-    </script>  
-	<meta name="viewport" content="width=device-width, initial-scale=1.0">
+    </script>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Toko Obat Bintan Jaya - Official Web</title>
     <link rel="manifest" href="manifest.json">
     <meta name="theme-color" content="#00b894">
@@ -1853,13 +1853,38 @@
         function enterShop() { const name = document.getElementById('visitor-name').value; if(!name) { showToast("Mohon isi nama Anda", true); return; } try { sessionStorage.setItem('visitorName', name); } catch (e) {} document.getElementById('welcome-modal').style.display = 'none'; try { document.getElementById('cust-name').value = name; } catch(e) {} }
         function showPage(id) { document.querySelectorAll('.page').forEach(p => p.classList.remove('active')); document.getElementById(id).classList.add('active'); window.scrollTo(0,0); document.querySelectorAll('.menu-link').forEach(l => l.classList.remove('active')); if(id==='home-page') document.getElementById('nav-home').classList.add('active'); if(id==='product-page') document.getElementById('nav-product').classList.add('active'); if(id === 'cart-page') renderCart(); }
         function adminLogin() { document.getElementById('admin-login-form').style.display = 'block'; document.getElementById('admin-dashboard').style.display = 'none'; document.getElementById('login-modal').style.display = 'block'; }
-        function checkAdmin() { if(document.getElementById('admin-pass').value === APP_CONFIG.pass_admin) { showToast("Login Berhasil!"); document.getElementById('admin-login-form').style.display = 'none'; document.getElementById('admin-dashboard').style.display = 'block'; } else { showToast("Password Salah!", true); } }
+        function checkAdmin() { 
+    // Ambil input password dari user
+    var inputUser = document.getElementById('admin-pass').value;
+
+    // Cek: Apakah input yang diacak SAMA DENGAN angka rahasia di Excel/Config?
+    if (acakPassword(inputUser) === APP_CONFIG.pass_admin.toString()) { 
+        showToast("Login Berhasil!"); 
+        document.getElementById('admin-login-form').style.display = 'none'; 
+        document.getElementById('admin-dashboard').style.display = 'block'; 
+    } else { 
+        showToast("Password Salah!", true); 
+        document.getElementById('admin-pass').value = ""; // Kosongkan input
+    } 
+}
         function openAdminLink(type) { let url = ""; if(type === 'master') url = APP_CONFIG.link_master; if(type === 'form') url = APP_CONFIG.link_form; if(type === 'laporan') url = APP_CONFIG.link_laporan; if(url && url.length > 5) window.open(url, '_blank'); else showToast("Link belum disetting di Excel", true); }
     
         // --- FUNGSI BARU: BUKA MODAL FAQ ---
         function openFAQModal() {
             document.getElementById('faq-modal').style.display = 'block';
         }
+
+// Fungsi untuk mengacak password menjadi kode angka
+function acakPassword(str) {
+    let hash = 0;
+    if (str.length === 0) return hash.toString();
+    for (let i = 0; i < str.length; i++) {
+        const char = str.charCodeAt(i);
+        hash = ((hash << 5) - hash) + char;
+        hash = hash & hash; // Convert to 32bit integer
+    }
+    return hash.toString();
+}
     </script>
 <script>
     // PWA REGISTRATION SCRIPT
@@ -1873,4 +1898,3 @@
 </script>
 </body>
 </html>
-
