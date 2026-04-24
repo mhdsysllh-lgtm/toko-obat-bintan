@@ -1635,6 +1635,33 @@
             }
         }
 
+		// --- FUNGSI KIRIM DATA KE SPREADSHEET (POS SYSTEM) ---
+async function kirimKePOS(dataStruk) {
+    // Gunakan URL Web App dari Apps Script Anda (image_b12dba.png)
+    const urlAPI = "https://script.google.com/macros/s/AKfycbyenhXNrHc42M0j_8DYvqn3GgPh2pMeaohhG0RylDZIdmqE1Kgau9xLyVl3orYlo8lX/exec"; 
+    
+    const payload = {
+        action: "newOrder",
+        id_pesanan: "OBB-" + Date.now().toString().slice(-6),
+        nama_pelanggan: dataStruk.n,
+        detail_pesanan: dataStruk.i.map(item => `${item.q}x ${item.n}`).join(", "),
+        grand_total: dataStruk.t,
+        metode_bayar: dataStruk.p,
+        metode_kirim: dataStruk.d
+    };
+
+    try {
+        await fetch(urlAPI, {
+            method: "POST",
+            mode: "no-cors",
+            body: JSON.stringify(payload)
+        });
+        console.log("Data berhasil terkirim ke Spreadsheet POS");
+    } catch (e) {
+        console.error("Gagal kirim ke POS:", e);
+    }
+}
+		
         // --- REVISI UTAMA: PROSES CHECKOUT TANPA PEMBULATAN ---
         function processCheckout() {
             const name = document.getElementById('cust-name').value;
@@ -1671,6 +1698,10 @@
                 i: cart.map(i=>({n:i.name, p:i.price-(i.price*(i.discount/100)), q:i.qty, u:i.unit})), 
                 t: roundedTotal 
             };
+			
+            // SISIPKAN DI SINI:
+            kirimKePOS(strukData);
+			
             const encodedData = btoa(unescape(encodeURIComponent(JSON.stringify(strukData))));
             const magicLink = BASE_URL_ONLINE + "?struk=" + encodedData;
 
