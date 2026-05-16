@@ -1728,7 +1728,6 @@ async function kirimKePOS(dataStruk) {
 
             msg += String.fromCodePoint(0x1F4B3) + ` Bayar: ${pay}\n`;
             msg += `----------------------------------\n`;
-            msg += String.fromCodePoint(0x1F5A8) + ` *CETAK STRUK (Utk Kurir):*\n${magicLink}`;
 
             // --- REVISI: BERSIHKAN NOMOR WA DARI 08 JADI 628 ---
             let targetWA = APP_CONFIG.wa_order;
