@@ -1104,6 +1104,8 @@
         let activeCategory = ""; 
         let currentSort = null;
         let isShopClosed = false;
+		
+		let currentPage = "Home";
         
         // Variabel untuk modal saat ini
         let currentModalProductId = null;
@@ -1373,6 +1375,8 @@
             if(isShopClosed) return showToast("Maaf, Toko Sedang Tutup", true);
             
             const p = products.find(x => x.id === id);
+			
+			trackEvent("Tambah_Keranjang", p.name, currentPage, `Memasukkan produk ke keranjang`);
             
             // LOGIKA VARIAN: Kalau dipanggil dari Modal dan ada varian yang dipilih
             let variantSuffix = "";
@@ -1472,7 +1476,7 @@
             const p = products.find(x => x.id === id); 
             if (!p) return;
             currentModalProductId = id;
-            currentSelectedVariant = null; 
+            currentSelectedVariant = null;			
 
             // --- REVISI: SEMBUNYIKAN TOMBOL CHAT UTAMA ---
             const mainChatBtn = document.querySelector('.btn-chat-float');
@@ -1482,6 +1486,7 @@
             // Supaya bisa di-refresh dan dishare langsung dari address bar
             const newUrl = '?product=' + id;
             window.history.pushState({path: newUrl}, '', newUrl);
+            trackEvent("View_Produk", p.name, currentPage, `Melihat detail produk`);
 
             // Cek Stok
             const isHabis = !p.stock.toLowerCase().includes('ada') && p.stock != '0' && p.stock != '';
@@ -1612,6 +1617,9 @@
         }
 
         function openCheckoutModal() { 
+		
+		    trackEvent("Checkout", "-", "Checkout", "Membuka formulir konfirmasi pesanan");
+		
             if(isShopClosed) return showToast("⚠️ Toko Tutup. Silakan kembali besok.", true);
             if(cart.length === 0) return showToast("Keranjang kosong!", true); 
             document.getElementById('checkout-modal').style.display='block'; 
@@ -1648,6 +1656,7 @@ async function kirimKePOS(dataStruk) {
         grand_total: dataStruk.t,
         metode_bayar: dataStruk.p,
         metode_kirim: dataStruk.d
+		session_id: dataStruk.sid //
     };
 
     try {
@@ -1696,7 +1705,8 @@ async function kirimKePOS(dataStruk) {
                 p: pay, 
                 dt: pickupDetail, 
                 i: cart.map(i=>({n:i.name, p:i.price-(i.price*(i.discount/100)), q:i.qty, u:i.unit})), 
-                t: roundedTotal 
+                t: roundedTotal
+				sid: getSessionId() //
             };
 			
             // SISIPKAN DI SINI:
@@ -1823,8 +1833,11 @@ async function kirimKePOS(dataStruk) {
 
         function sendRequest() {
             const name = document.getElementById('req-name').value;
-            const product = document.getElementById('req-product').value;
-            const category = document.getElementById('req-category').value;
+			const product = document.getElementById('req-product').value;
+            
+			trackEvent("Request_produk", product, "Katalog", "Mengajukan request pengadaan produk");
+			
+			const category = document.getElementById('req-category').value;
             const forWhom = document.querySelector('input[name="req-for"]:checked').value;
             const needType = document.querySelector('input[name="req-need"]:checked').value;
             const reason = document.getElementById('req-reason').value;
@@ -1876,13 +1889,35 @@ async function kirimKePOS(dataStruk) {
             msg += `_${String.fromCodePoint(0x1F310)} Dikirim dari Tombol Chat Website_`;
 
             const waLink = `https://api.whatsapp.com/send?phone=${targetNumber}&text=${encodeURIComponent(msg)}`;
-            window.open(waLink, '_blank');
+            
+			trackEvent("Klik_WA", "-", currentPage, "Mengklik tombol konsultasi bantuan WhatsApp");
+			
+			window.open(waLink, '_blank');
             closeModal('chat-modal');
         }
 
         function enterShop() { const name = document.getElementById('visitor-name').value; if(!name) { showToast("Mohon isi nama Anda", true); return; } try { sessionStorage.setItem('visitorName', name); } catch (e) {} document.getElementById('welcome-modal').style.display = 'none'; try { document.getElementById('cust-name').value = name; } catch(e) {} }
-        function showPage(id) { document.querySelectorAll('.page').forEach(p => p.classList.remove('active')); document.getElementById(id).classList.add('active'); window.scrollTo(0,0); document.querySelectorAll('.menu-link').forEach(l => l.classList.remove('active')); if(id==='home-page') document.getElementById('nav-home').classList.add('active'); if(id==='product-page') document.getElementById('nav-product').classList.add('active'); if(id === 'cart-page') renderCart(); }
-        function adminLogin() { document.getElementById('admin-login-form').style.display = 'block'; document.getElementById('admin-dashboard').style.display = 'none'; document.getElementById('login-modal').style.display = 'block'; }
+        function showPage(id) { 
+            document.querySelectorAll('.page').forEach(p => p.classList.remove('active')); 
+            document.getElementById(id).classList.add('active'); 
+            window.scrollTo(0,0); 
+            document.querySelectorAll('.menu-link').forEach(l => l.classList.remove('active')); 
+            
+            // --- LOGIKA BARU: UPDATE & TRACK HALAMAN AKTIF ---
+            if (id === 'home-page') currentPage = "Home";
+            else if (id === 'product-page') currentPage = "Katalog";
+            else if (id === 'cart-page') currentPage = "Keranjang";
+
+            // Kirim aktivitas kunjungan halaman ke spreadsheet statistik
+            trackEvent("Visit", "-", currentPage, `Membuka halaman ${currentPage}`);
+            // -------------------------------------------------
+
+            if(id==='home-page') document.getElementById('nav-home').classList.add('active'); 
+            if(id==='product-page') document.getElementById('nav-product').classList.add('active'); 
+            if(id === 'cart-page') renderCart(); 
+        }
+        
+		function adminLogin() { document.getElementById('admin-login-form').style.display = 'block'; document.getElementById('admin-dashboard').style.display = 'none'; document.getElementById('login-modal').style.display = 'block'; }
         function checkAdmin() { 
     // Ambil input password dari user
     var inputUser = document.getElementById('admin-pass').value;
@@ -1925,6 +1960,80 @@ function acakPassword(str) {
                 .catch(err => console.log('PWA Error:', err));
         });
     }
+</script>
+<script>
+    // --- MESIN ANALITIK (WEB TRACKER) ---
+    // GANTI LINK DI BAWAH DENGAN LINK API SPREADSHEET STATISTIK WEB YANG BARU
+    const API_STATISTIK_URL = "https://script.google.com/macros/s/AKfycbzQ35KdqAJl5M1AymMwjyIm_BQy1aPo9PcLKFmptL-_5OeeYifNIDQ4oiEGO_mpwgGC4w/exec"; 
+
+    // 1. Buat atau Ambil Session ID (Berlaku selama browser tidak ditutup)
+    function getSessionId() {
+        let sid = sessionStorage.getItem('session_id');
+        if (!sid) {
+            sid = 'SES-' + Math.random().toString(36).substr(2, 9).toUpperCase();
+            sessionStorage.setItem('session_id', sid);
+            sessionStorage.setItem('session_start', Date.now()); // Catat waktu mulai
+        }
+        return sid;
+    }
+
+    // 2. Deteksi Perangkat (Device)
+    function getDeviceType() {
+        const ua = navigator.userAgent;
+        if (/(tablet|ipad|playbook|silk)|(android(?!.*mobi))/i.test(ua)) return "Tablet";
+        if (/Mobile|Android|iP(hone|od)|IEMobile|BlackBerry|Kindle|Silk-Accelerated|(hpw|web)OS|Opera M(obi|ini)/.test(ua)) return "Mobile";
+        return "Desktop";
+    }
+
+    // 3. Deteksi Sumber Asal (Referrer)
+    function getTrafficSource() {
+        const ref = document.referrer.toLowerCase();
+        if (ref.includes('instagram.com')) return 'Instagram';
+        if (ref.includes('facebook.com')) return 'Facebook';
+        if (ref.includes('google.com')) return 'Google';
+        if (ref.includes('wa.me') || ref.includes('whatsapp')) return 'WhatsApp';
+        return ref ? 'Lainnya' : 'Direct (Ketik Langsung)';
+    }
+
+    // 4. Hitung Durasi (Dari awal buka web sampai aksi dilakukan)
+    function getDurationSeconds() {
+        const start = sessionStorage.getItem('session_start');
+        if(!start) return "0 detik";
+        const diff = Math.floor((Date.now() - parseInt(start)) / 1000);
+        return diff + " detik";
+    }
+
+    // 5. Fungsi Utama untuk Mengirim Data ke Spreadsheet
+    function trackEvent(eventName, product = "-", page = "-", note = "-") {
+        if (!API_STATISTIK_URL || API_STATISTIK_URL.includes("MASUKKAN_LINK")) return;
+
+        const payload = {
+            session_id: getSessionId(),
+            event: eventName,
+            produk: product,
+            halaman: page,
+            device: getDeviceType(),
+            sumber: getTrafficSource(),
+            durasi: getDurationSeconds(),
+            keterangan: note
+        };
+
+        // Kirim diam-diam di background (tanpa loading)
+        fetch(API_STATISTIK_URL, {
+            method: "POST",
+            mode: "no-cors",
+            body: JSON.stringify(payload)
+        }).catch(err => console.log("Gagal kirim statistik", err));
+    }
+
+    // --- PEMICU OTOMATIS (TRIGGER) ---
+    window.addEventListener('load', () => {
+        // Rekam saat pengunjung pertama kali membuka web
+        if(!sessionStorage.getItem('visited')) {
+            trackEvent("Visit", "-", "Home", "Pengunjung baru membuka web");
+            sessionStorage.setItem('visited', 'true');
+        }
+    });
 </script>
 </body>
 </html>
