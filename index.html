@@ -1656,7 +1656,7 @@ async function kirimKePOS(dataStruk) {
         grand_total: dataStruk.t,
         metode_bayar: dataStruk.p,
         metode_kirim: dataStruk.d,
-		session_id: dataStruk.sid //
+		session_id: dataStruk.sid
     };
 
     try {
@@ -1706,7 +1706,7 @@ async function kirimKePOS(dataStruk) {
                 dt: pickupDetail, 
                 i: cart.map(i=>({n:i.name, p:i.price-(i.price*(i.discount/100)), q:i.qty, u:i.unit})), 
                 t: roundedTotal,
-				sid: getSessionId() //
+				sid: getSessionId()
             };
 			
             // SISIPKAN DI SINI:
