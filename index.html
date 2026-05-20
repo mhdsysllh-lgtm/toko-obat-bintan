@@ -1748,6 +1748,8 @@ async function kirimKePOS(dataStruk) {
                 targetWA = '62' + targetWA.substring(1);
             }
 
+			trackEvent("Checkout_Berhasil", "-", "Checkout", "Berhasil mengirim pesanan ke WA");
+			
             window.open(`https://api.whatsapp.com/send?phone=${targetWA}&text=${encodeURIComponent(msg)}`, '_blank'); 
 
             cart = []; 
