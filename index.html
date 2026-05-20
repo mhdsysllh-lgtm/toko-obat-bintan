@@ -2012,9 +2012,15 @@ function acakPassword(str) {
         return diff + " detik";
     }
 
-    // 5. Fungsi Utama untuk Mengirim Data ke Spreadsheet
+	// 5. Fungsi Utama untuk Mengirim Data ke Spreadsheet
     function trackEvent(eventName, product = "-", page = "-", note = "-") {
         if (!API_STATISTIK_URL || API_STATISTIK_URL.includes("MASUKKAN_LINK")) return;
+
+        // 🚀 TAHAP 5: Ambil nama pengunjung dari memori (buku tamu)
+        let visitor = sessionStorage.getItem('visitorName');
+        if (visitor) {
+            note = visitor + " - " + note;
+        }
 
         const payload = {
             session_id: getSessionId(),
