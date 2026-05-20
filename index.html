@@ -1888,11 +1888,18 @@ async function kirimKePOS(dataStruk) {
             msg += `"${message}"\n\n`;
             msg += `_${String.fromCodePoint(0x1F310)} Dikirim dari Tombol Chat Website_`;
 
-            const waLink = `https://api.whatsapp.com/send?phone=${targetNumber}&text=${encodeURIComponent(msg)}`;
+			const waLink = `https://api.whatsapp.com/send?phone=${targetNumber}&text=${encodeURIComponent(msg)}`;
             
-			trackEvent("Klik_WA", "-", currentPage, "Mengklik tombol konsultasi bantuan WhatsApp");
+            // --- LOGIKA PELACAKAN NAMA PRODUK TAHAP 4 ---
+            let namaProd = "-";
+            // Membaca otomatis nama produk dari teks pesan yang sudah disiapkan sistem
+            if (message.includes('produk "')) {
+                namaProd = message.split('produk "')[1].split('"')[0];
+            }
+            
+            trackEvent("Klik_WA", namaProd, currentPage, "Konsultasi via WhatsApp");
 			
-			window.open(waLink, '_blank');
+            window.open(waLink, '_blank');
             closeModal('chat-modal');
         }
 
